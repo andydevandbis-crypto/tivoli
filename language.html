@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+    <link rel="icon"
+          href="amusement-park.ico"
+          type="image/x-icon">
+
+    <title>Tivolihjul – Välj språk, Wybierz język, Select language</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100%;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+
+            color: #fff;
+
+            background:
+                radial-gradient(circle at 20% 10%, #ffe66d 0, transparent 22%),
+                radial-gradient(circle at 85% 15%, #ff6b8a 0, transparent 24%),
+                radial-gradient(circle at 50% 100%, #62d9ff 0, transparent 30%),
+                #ff5c8a;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 25px 15px 45px;
+        }
+
+        .language-screen {
+            width: 100%;
+            max-width: 900px;
+            text-align: center;
+        }
+
+        .top-decoration {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(42px, 9vw, 78px);
+            font-weight: 1000;
+            letter-spacing: 4px;
+            line-height: .95;
+            color: #fff;
+            text-shadow: 4px 4px 0 #e51d4f,
+                         7px 7px 0 rgba(0,0,0,.18);
+        }
+
+        .subtitle {
+            margin: 18px 0 25px;
+            font-size: clamp(17px, 3vw, 22px);
+            font-weight: bold;
+        }
+
+        .language-card {
+            width: 100%;
+            padding: 25px;
+            border-radius: 24px;
+            background: rgba(255,255,255,.94);
+            color: #222;
+            box-shadow: 0 15px 35px rgba(0,0,0,.18),
+                        inset 0 0 0 4px rgba(255,255,255,.7);
+        }
+
+        .languages {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 15px;
+        }
+
+        .language-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 190px;
+            padding: 18px;
+            border: 0;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #ff4d75, #ff8a3d);
+            color: #fff;
+            font-family: inherit;
+            font-weight: 900;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 7px 0 rgba(0,0,0,.15);
+            transition: transform .12s, filter .12s, box-shadow .12s;
+        }
+
+        .language-button:hover {
+            filter: brightness(1.06);
+            transform: translateY(-2px);
+        }
+
+        .language-button:active {
+            transform: translateY(4px);
+            box-shadow: 0 3px 0 rgba(0,0,0,.15);
+        }
+
+        .flag {
+            width: 130px;
+            height: 82px;
+            margin-bottom: 16px;
+            border-radius: 7px;
+            overflow: hidden;
+            box-shadow: 0 5px 10px rgba(0,0,0,.25);
+            background: #fff;
+        }
+
+        .flag svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .language-name {
+            font-size: 21px;
+        }
+
+        .bottom-decoration {
+            margin-top: 25px;
+            font-size: 26px;
+        }
+
+        @media (max-width: 650px) {
+            body {
+                padding: 18px 10px 30px;
+            }
+
+            .top-decoration {
+                font-size: 24px;
+            }
+
+            .language-card {
+                padding: 15px;
+            }
+
+            .languages {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .language-button {
+                min-height: 115px;
+                flex-direction: row;
+                justify-content: flex-start;
+                text-align: left;
+            }
+
+            .flag {
+                width: 95px;
+                height: 62px;
+                flex: 0 0 95px;
+                margin: 0 18px 0 0;
+            }
+
+            .language-name {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<main class="language-screen">
+
+    <div class="top-decoration">
+        🎪 ✨ 🎡 ✨ 🎪
+    </div>
+
+    <h1>TIVOLI</h1>
+
+    <p class="subtitle">
+        Välj språk / Wybierz język / Select language
+    </p>
+
+    <section class="language-card">
+
+        <div class="languages">
+
+            <!-- SVENSKA -->
+            <a class="language-button" href="index.html">
+                <div class="flag">
+                    <svg viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg" aria-label="Svenska flaggan">
+                        <rect width="160" height="100" fill="#006AA7"/>
+                        <rect x="50" width="20" height="100" fill="#FECC00"/>
+                        <rect y="40" width="160" height="20" fill="#FECC00"/>
+                    </svg>
+                </div>
+                <div class="language-name">Svenska</div>
+            </a>
+
+            <!-- POLSKI -->
+            <a class="language-button" href="polski.html">
+                <div class="flag">
+                    <svg viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg" aria-label="Polska flaggan">
+                        <rect width="160" height="50" fill="#FFFFFF"/>
+                        <rect y="50" width="160" height="50" fill="#DC143C"/>
+                    </svg>
+                </div>
+                <div class="language-name">Polski</div>
+            </a>
+
+            <!-- ENGLISH -->
+            <a class="language-button" href="english.html">
+                <div class="flag">
+                    <svg viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg" aria-label="United Kingdom flag">
+                        <rect width="160" height="100" fill="#012169"/>
+                        <path d="M0 0 L18 0 L160 82 L160 100 L142 100 Z" fill="#FFFFFF"/>
+                        <path d="M160 0 L142 0 L0 82 L0 100 L18 100 Z" fill="#FFFFFF"/>
+                        <path d="M0 0 L7 0 L160 88 L160 100 L153 100 Z" fill="#C8102E"/>
+                        <path d="M160 0 L153 0 L0 88 L0 100 L7 100 Z" fill="#C8102E"/>
+                        <rect x="65" width="30" height="100" fill="#FFFFFF"/>
+                        <rect y="35" width="160" height="30" fill="#FFFFFF"/>
+                        <rect x="70" width="20" height="100" fill="#C8102E"/>
+                        <rect y="40" width="160" height="20" fill="#C8102E"/>
+                    </svg>
+                </div>
+                <div class="language-name">English</div>
+            </a>
+
+        </div>
+
+    </section>
+
+    <div class="bottom-decoration">
+        🎠 🎟️ 🎈 🎠
+    </div>
+
+</main>
+
+</body>
+</html>
