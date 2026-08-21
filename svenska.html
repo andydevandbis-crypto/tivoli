@@ -859,8 +859,8 @@ const translations = {
 
     sv: {
         subtitle: "Fyll i namnen och starta sedan hjulet!",
-        countLabel: "Antal fält",
-        createWheel: "🎡 Skapa fält?",
+        countLabel: "Antal fält?",
+        createWheel: "🎡 Skapa fält",
         wheelNameLabel: "Vad ska vi kalla ditt hjul?",
         wheelNamePlaceholder: "Skriv namnet på ditt hjul här...",
         namePlaceholder: "Namn på fälten...",
@@ -2746,7 +2746,7 @@ fullscreenButton.addEventListener(
                 ) {
 
                     await screen.orientation
-                        .lock("landscape")
+                        .lock("portrait")
                         .catch(() => {});
                 }
 
