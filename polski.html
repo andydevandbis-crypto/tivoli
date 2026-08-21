@@ -895,11 +895,11 @@ const translations = {
 
     pl: {
         subtitle: "Wpisz imiona, a następnie uruchom koło!",
-        countLabel: "Liczba pól",
-        createWheel: "🎡 UTWÓRZ KOŁO",
-        wheelNameLabel: "Wpisz swoje imię",
-        wheelNamePlaceholder: "Wpisz swoje imię...",
-        namePlaceholder: "Wpisz swoje imię...",
+        countLabel: "Liczba pól?",
+        createWheel: "🎡 Utworzyć pola",
+        wheelNameLabel: "Jak nazwać twoje koło?",
+        wheelNamePlaceholder: "Wpisz tutaj nazwę swojego koła...",
+        namePlaceholder: "Nazwy pól...",
         startWheel: "🎪 URUCHOM KOŁO",
         back: "← Wstecz",
         fullscreen: "⛶ Pełny ekran",
@@ -2746,7 +2746,7 @@ fullscreenButton.addEventListener(
                 ) {
 
                     await screen.orientation
-                        .lock("landscape")
+                        .lock("portrait")
                         .catch(() => {});
                 }
 

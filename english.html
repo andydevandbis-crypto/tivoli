@@ -877,11 +877,11 @@ const translations = {
 
     en: {
         subtitle: "Enter the names and then start the wheel!",
-        countLabel: "Number of pieces",
-        createWheel: "🎡 CREATE WHEEL",
-        wheelNameLabel: "Enter your name",
-        wheelNamePlaceholder: "Enter your name...",
-        namePlaceholder: "Enter your name...",
+        countLabel: "Number of fields?",
+        createWheel: "🎡 Create fields",
+        wheelNameLabel: "What should we call your wheel?",
+        wheelNamePlaceholder: "Enter the name of your wheel here...",
+        namePlaceholder: ""Name of the fields...",
         startWheel: "🎪 START THE WHEEL",
         back: "← Back",
         fullscreen: "⛶ Fullscreen",
@@ -2746,7 +2746,7 @@ fullscreenButton.addEventListener(
                 ) {
 
                     await screen.orientation
-                        .lock("landscape")
+                        .lock("portrait")
                         .catch(() => {});
                 }
 
