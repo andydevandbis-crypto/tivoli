@@ -221,7 +221,7 @@ button {
     max-width: 1300px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: auto 1fr auto auto;
+    grid-template-columns: auto 1fr auto;
     align-items: center;
     gap: 10px;
 }
@@ -476,6 +476,10 @@ canvas {
     word-break: break-word;
 }
 
+.mobile-controls {
+    display: none;
+}
+
 .game-hint {
     display: none;
 }
@@ -496,7 +500,15 @@ canvas {
     }
 
     .game-header {
-        grid-template-columns: auto 1fr auto auto;
+        grid-template-columns: 1fr;
+    }
+
+    .game-header > .small-button {
+        display: none;
+    }
+
+    .game-title {
+        grid-column: 1;
     }
 
     .wheel-area {
@@ -536,15 +548,15 @@ canvas {
     }
 
     .game-header {
-        grid-template-columns: auto 1fr auto;
+        grid-template-columns: 1fr;
     }
 
-    .fullscreen-button {
+    .game-header > .small-button {
         display: none;
     }
 
     .game-title {
-        max-width: calc(100% - 120px);
+        max-width: 100%;
         font-size: clamp(24px, 7vw, 38px);
         letter-spacing: 2px;
     }
@@ -579,6 +591,21 @@ canvas {
         width: 12px;
         height: 12px;
     }
+
+    .mobile-controls {
+        display: flex;
+        width: min(94%, 850px);
+        margin: 8px auto 0;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .mobile-controls .small-button {
+        display: block;
+        flex: 1;
+        min-width: 0;
+    }
 }
 
 @media (orientation: landscape) and (max-width: 699px) {
@@ -594,10 +621,11 @@ canvas {
         top: 5px;
         width: auto;
         z-index: 30;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
+        display: block;
+    }
+
+    .game-header > .small-button {
+        display: none;
     }
 
     .game-title {
@@ -656,18 +684,25 @@ canvas {
         width: 12px;
         height: 12px;
     }
-}
 
-@media (orientation: landscape) and (max-width: 699px) {
-    .result {
+    .mobile-controls {
+        display: flex;
         position: absolute;
-        right: 2px;
-        left: auto;
-        top: 50%;
-        transform: translateY(-50%);
-        width: min(28vw, 240px);
+        left: 50%;
+        bottom: 8px;
+        transform: translateX(-50%);
+        width: min(94vw, 520px);
         margin: 0;
-        z-index: 20;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        z-index: 40;
+    }
+
+    .mobile-controls .small-button {
+        display: block;
+        flex: 1;
+        min-width: 0;
     }
 }
     </style>
@@ -677,7 +712,7 @@ canvas {
 
 <div id="setupScreen" class="screen setup-screen">
 
-    <div class="top-decoration">🎪 ✨ 🎡 ✨ 🎪</div>
+    <div class="top-decoration">🎪 ✨ ✨ 🎪</div>
 
     <h1>WHEEL OF FORTUNE</h1>
 
@@ -700,7 +735,7 @@ canvas {
         </div>
 
         <button id="createWheel" class="primary-button">
-            🎡 SKAPA HJUL
+            SKAPA HJUL
         </button>
 
         <div class="wheel-name-row">
@@ -715,7 +750,7 @@ canvas {
             <input
                 id="wheelName"
                 type="text"
-                maxlength="30"
+                maxlength="16"
                 placeholder="Skriv ditt namn..."
             >
         </div>
@@ -740,16 +775,8 @@ canvas {
         </button>
 
         <div id="gameTitle" class="game-title">
-            🎡 Wheel of fortune
+            Wheel of fortune
         </div>
-
-        <button
-            id="fullscreenButton"
-            class="small-button fullscreen-button"
-            type="button"
-        >
-            ⛶ Helskärm
-        </button>
 
         <button
             id="soundButton"
@@ -823,6 +850,27 @@ canvas {
 
         </section>
 
+        <div class="mobile-controls">
+
+            <button
+                id="mobileBackButton"
+                class="small-button"
+                type="button"
+            >
+                ← Tillbaka
+            </button>
+
+            <button
+                id="mobileSoundButton"
+                class="small-button sound-button"
+                type="button"
+                aria-pressed="true"
+            >
+                🔊 Ljud
+            </button>
+
+        </div>
+
     </main>
 
 
@@ -860,13 +908,12 @@ const translations = {
     sv: {
         subtitle: "Fyll i namnen och starta sedan hjulet!",
         countLabel: "Antal tårtbitar",
-        createWheel: "🎡 SKAPA HJUL",
+        createWheel: "SKAPA HJUL",
         wheelNameLabel: "Skriv ditt namn",
         wheelNamePlaceholder: "Skriv ditt namn...",
         namePlaceholder: "Skriv ditt namn...",
         startWheel: "🎪 STARTA HJULET",
         back: "← Tillbaka",
-        fullscreen: "⛶ Helskärm",
         sound: "🔊 Ljud",
         soundOff: "🔇 Ljud av",
         winner: "VINNARE",
@@ -878,13 +925,12 @@ const translations = {
     en: {
         subtitle: "Enter the names and then start the wheel!",
         countLabel: "Number of fields?",
-        createWheel: "🎡 Create fields",
+        createWheel: "Create fields",
         wheelNameLabel: "What should we call your wheel?",
         wheelNamePlaceholder: "Enter the name of your wheel here...",
         namePlaceholder: "Name of the fields...",
         startWheel: "🎪 START THE WHEEL",
         back: "← Back",
-        fullscreen: "⛶ Fullscreen",
         sound: "🔊 Sound",
         soundOff: "🔇 Sound off",
         winner: "WINNER",
@@ -896,13 +942,12 @@ const translations = {
     pl: {
         subtitle: "Wpisz imiona, a następnie uruchom koło!",
         countLabel: "Liczba pól",
-        createWheel: "🎡 UTWÓRZ KOŁO",
+        createWheel: "UTWÓRZ KOŁO",
         wheelNameLabel: "Wpisz swoje imię",
         wheelNamePlaceholder: "Wpisz swoje imię...",
         namePlaceholder: "Wpisz swoje imię...",
         startWheel: "🎪 URUCHOM KOŁO",
         back: "← Wstecz",
-        fullscreen: "⛶ Pełny ekran",
         sound: "🔊 Dźwięk",
         soundOff: "🔇 Dźwięk wyłączony",
         winner: "ZWYCIĘZCA",
@@ -948,10 +993,13 @@ function setLanguage(language) {
     document.getElementById("backButton").textContent =
         t.back;
 
-    document.getElementById("fullscreenButton").textContent =
-        t.fullscreen;
-
     document.getElementById("soundButton").textContent =
+        soundEnabled ? t.sound : t.soundOff;
+
+    document.getElementById("mobileBackButton").textContent =
+        t.back;
+
+    document.getElementById("mobileSoundButton").textContent =
         soundEnabled ? t.sound : t.soundOff;
 
     document.getElementById("resultTitle").textContent =
@@ -1021,11 +1069,14 @@ const gameTitle =
 const backButton =
     document.getElementById("backButton");
 
-const fullscreenButton =
-    document.getElementById("fullscreenButton");
-
 const soundButton =
     document.getElementById("soundButton");
+
+const mobileBackButton =
+    document.getElementById("mobileBackButton");
+
+const mobileSoundButton =
+    document.getElementById("mobileSoundButton");
 
 const backgroundAudio =
     document.getElementById("backgroundAudio");
@@ -2666,8 +2717,14 @@ startButton.addEventListener(
             wheelNameInput.value.trim();
 
         gameTitle.textContent =
-            wheelName ||
-            "🎡 WHEEL OF FORTUNE";
+            wheelName
+                ? `★ ${wheelName} ★`
+                : "WHEEL OF FORTUNE";
+
+        gameTitle.innerHTML =
+            wheelName
+                ? `<span style="color:#ffd928">★</span> ${wheelName} <span style="color:#ffd928">★</span>`
+                : "WHEEL OF FORTUNE";
 
         setupScreen.style.display =
             "none";
@@ -2685,79 +2742,48 @@ startButton.addEventListener(
    BACK
 ========================================================= */
 
+function goBack() {
+
+    if (
+        animationId !== null
+    ) {
+
+        cancelAnimationFrame(
+            animationId
+        );
+
+        animationId = null;
+    }
+
+    velocity = 0;
+    stopping = false;
+    dragging = false;
+    isSpinning = false;
+
+    stopBackgroundMusic();
+    stopSpinAudio();
+
+    gameStarted = false;
+
+    gameScreen.style.display =
+        "none";
+
+    setupScreen.style.display =
+        "block";
+
+    setResult(
+        translations[currentLanguage].spinWheel
+    );
+}
+
 backButton.addEventListener(
     "click",
-    () => {
-
-        if (
-            animationId !== null
-        ) {
-
-            cancelAnimationFrame(
-                animationId
-            );
-
-            animationId = null;
-        }
-
-        velocity = 0;
-        stopping = false;
-        dragging = false;
-        isSpinning = false;
-
-        stopBackgroundMusic();
-        stopSpinAudio();
-
-        gameStarted = false;
-
-        gameScreen.style.display =
-            "none";
-
-        setupScreen.style.display =
-            "block";
-
-        setResult(
-            translations[currentLanguage].spinWheel
-        );
-    }
+    goBack
 );
 
-
-/* =========================================================
-   FULLSCREEN
-========================================================= */
-
-fullscreenButton.addEventListener(
+mobileBackButton.addEventListener(
     "click",
-    async () => {
-
-        try {
-
-            if (
-                !document.fullscreenElement
-            ) {
-
-                await document
-                    .documentElement
-                    .requestFullscreen();
-
-                if (
-                    screen.orientation?.lock
-                ) {
-
-                    await screen.orientation
-                        .lock("portrait")
-                        .catch(() => {});
-                }
-
-            } else {
-
-                await document
-                    .exitFullscreen();
-            }
-
-        } catch (_) {}
-    }
+    goBack
 );
 
 
@@ -2765,35 +2791,52 @@ fullscreenButton.addEventListener(
    SOUND
 ========================================================= */
 
+function toggleSound() {
+
+    ensureAudio();
+
+    soundEnabled =
+        !soundEnabled;
+
+    soundButton.setAttribute(
+        "aria-pressed",
+        String(soundEnabled)
+    );
+
+    mobileSoundButton.setAttribute(
+        "aria-pressed",
+        String(soundEnabled)
+    );
+
+    soundButton.textContent =
+        soundEnabled
+            ? translations[currentLanguage].sound
+            : translations[currentLanguage].soundOff;
+
+    mobileSoundButton.textContent =
+        soundEnabled
+            ? translations[currentLanguage].sound
+            : translations[currentLanguage].soundOff;
+
+    if (soundEnabled) {
+
+        startBackgroundMusic();
+
+    } else {
+
+        stopBackgroundMusic();
+        stopSpinAudio();
+    }
+}
+
 soundButton.addEventListener(
     "click",
-    () => {
+    toggleSound
+);
 
-        ensureAudio();
-
-        soundEnabled =
-            !soundEnabled;
-
-        soundButton.setAttribute(
-            "aria-pressed",
-            String(soundEnabled)
-        );
-
-        soundButton.textContent =
-            soundEnabled
-                ? translations[currentLanguage].sound
-                : translations[currentLanguage].soundOff;
-
-        if (soundEnabled) {
-
-            startBackgroundMusic();
-
-        } else {
-
-            stopBackgroundMusic();
-            stopSpinAudio();
-        }
-    }
+mobileSoundButton.addEventListener(
+    "click",
+    toggleSound
 );
 
 
