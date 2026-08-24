@@ -1,0 +1,2275 @@
+﻿<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+
+<!-- FAVICON -->
+<link rel="icon" type="image/x-icon" href="C:\Users\C_Kos\Desktop\APP\Tivolihjul\amusement-park.ico">
+
+<meta name="viewport"
+content="width=device-width,
+initial-scale=1.0,
+maximum-scale=1.0,
+user-scalable=no">
+
+<title>Apans Tivoli</title>
+
+<style>
+
+* {
+    box-sizing:border-box;
+    user-select:none;
+    -webkit-user-select:none;
+}
+
+html,body {
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:Arial,sans-serif;
+    background:#65c8ef;
+}
+
+canvas {
+    width:100%;
+    height:100%;
+    display:block;
+    touch-action:none;
+}
+
+#info {
+    position:fixed;
+    top:15px;
+    left:15px;
+    z-index:20;
+
+    padding:12px 18px;
+
+    color:white;
+    background:rgba(72,26,84,.86);
+
+    border:3px solid #ffd83d;
+    border-radius:15px;
+
+    font-size:17px;
+    font-weight:bold;
+
+    box-shadow:0 4px 12px rgba(0,0,0,.25);
+}
+
+#level {
+    position:fixed;
+    top:15px;
+    right:15px;
+    z-index:20;
+
+    padding:10px 18px;
+
+    color:white;
+    background:#e63e68;
+
+    border:3px solid white;
+    border-radius:15px;
+
+    font-size:18px;
+    font-weight:bold;
+}
+
+#message {
+    position:fixed;
+
+    left:50%;
+    top:35%;
+
+    transform:translate(-50%,-50%);
+
+    z-index:50;
+
+    font-size:50px;
+    font-weight:bold;
+
+    color:white;
+
+    text-align:center;
+
+    text-shadow:
+        4px 4px 0 #c92f58,
+        -2px -2px 0 #c92f58;
+
+    opacity:0;
+
+    pointer-events:none;
+
+    white-space:nowrap;
+
+    transition:opacity .2s;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="info">
+🎪 Help the monkey reach its owner</div>
+
+<div id="message"></div>
+
+<canvas id="canvas"></canvas>
+
+<script>
+
+/* =====================================================
+   CANVAS
+===================================================== */
+
+const canvas =
+document.getElementById("canvas");
+
+const ctx =
+canvas.getContext("2d");
+
+const message =
+document.getElementById("message");
+
+let W = 0;
+let H = 0;
+
+function resize(){
+
+    W = window.innerWidth;
+    H = window.innerHeight;
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    canvas.width = Math.floor(W * dpr);
+    canvas.height = Math.floor(H * dpr);
+
+    canvas.style.width = W + "px";
+    canvas.style.height = H + "px";
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+}
+
+window.addEventListener("resize",resize);
+
+resize();
+
+
+/* =====================================================
+   SPEL
+===================================================== */
+
+let gameStarted = true;
+
+let dragging = false;
+
+let dragStartX = 0;
+
+let dragAmount = 0;
+
+let maximumDrag = 0;
+
+let lightTime = 0;
+
+let ferrisAngle = 0;
+
+let popTimer = null;
+
+
+/* =====================================================
+   GUNGA
+===================================================== */
+
+const swing = {
+
+    anchorX:0,
+    anchorY:105,
+
+    ropeLength:190,
+
+    angle:0,
+
+    velocity:0,
+
+    acceleration:0,
+
+    damping:.997,
+
+    x:0,
+    y:0,
+
+    monkeyReleased:false
+
+};
+
+
+/* =====================================================
+   APA
+===================================================== */
+
+const monkey = {
+
+    x:0,
+    y:0,
+
+    vx:0,
+    vy:0,
+
+    attached:true,
+
+    rotation:0,
+
+    type:1
+
+};
+
+
+/* =====================================================
+   FÅNGARE
+===================================================== */
+
+const catcher = {
+
+    x:0,
+    y:0,
+
+    catchRadius:60,
+
+    happy:false,
+
+    type:"girl"
+
+};
+
+
+/* =====================================================
+   BALLONGER
+===================================================== */
+
+let balloons = [];
+
+
+/* =====================================================
+   LADDA BANA
+===================================================== */
+
+function setupLevel(){
+
+    clearTimeout(popTimer);
+
+    dragging = false;
+
+    dragAmount = 0;
+
+    maximumDrag = 0;
+
+
+    swing.anchorX = W*.28;
+
+    swing.anchorY = 105;
+
+    swing.angle = 0;
+
+    swing.velocity = 0;
+
+    swing.acceleration = 0;
+
+    swing.monkeyReleased = false;
+
+
+    monkey.attached = true;
+
+    monkey.vx = 0;
+
+    monkey.vy = 0;
+
+    monkey.rotation = 0;
+
+    monkey.type = 1;
+
+
+    catcher.x = W*.82;
+
+    catcher.y = H-90;
+
+    catcher.type = "girl";
+
+    catcher.happy = false;
+
+
+    balloons = [
+
+        {
+            x:W*.50,
+            y:H*.43,
+            radius:28,
+            color:"#ff4775",
+            popped:false,
+            popTime:0
+        },
+
+        {
+            x:W*.62,
+            y:H*.58,
+            radius:25,
+            color:"#ffd83d",
+            popped:false,
+            popTime:0
+        },
+
+        {
+            x:W*.72,
+            y:H*.38,
+            radius:27,
+            color:"#55cbe6",
+            popped:false,
+            popTime:0
+        },
+
+        {
+            x:W*.77,
+            y:H*.65,
+            radius:24,
+            color:"#8ddd5c",
+            popped:false,
+            popTime:0
+        }
+
+    ];
+
+    updatePositions();
+
+}
+
+
+/* =====================================================
+   INPUT
+===================================================== */
+
+canvas.addEventListener("pointerdown",e=>{
+
+    if(!gameStarted) return;
+
+    if(swing.monkeyReleased) return;
+
+    dragging = true;
+
+    dragStartX = e.clientX;
+
+    dragAmount = 0;
+
+    maximumDrag = 0;
+
+    canvas.setPointerCapture(e.pointerId);
+
+});
+
+
+canvas.addEventListener("pointermove",e=>{
+
+    if(!dragging) return;
+
+    const distance =
+        dragStartX-e.clientX;
+
+    dragAmount =
+        Math.max(0,distance);
+
+    dragAmount =
+        Math.min(350,dragAmount);
+
+    maximumDrag =
+        Math.max(
+            maximumDrag,
+            dragAmount
+        );
+
+});
+
+
+canvas.addEventListener("pointerup",()=>{
+
+    if(!dragging) return;
+
+    dragging = false;
+
+    const power =
+        maximumDrag/350;
+
+    swing.velocity =
+        power*.075;
+
+    swing.angle =
+        -power*1.15;
+
+});
+
+
+/* =====================================================
+   POSITION
+===================================================== */
+
+function updatePositions(){
+
+    swing.x =
+        swing.anchorX+
+        Math.sin(swing.angle)*
+        swing.ropeLength;
+
+    swing.y =
+        swing.anchorY+
+        Math.cos(swing.angle)*
+        swing.ropeLength;
+
+
+    if(monkey.attached){
+
+        monkey.x = swing.x;
+
+        monkey.y = swing.y-42;
+
+    }
+
+}
+
+
+/* =====================================================
+   GUNGAN
+===================================================== */
+
+function updateSwing(){
+
+    if(!gameStarted) return;
+
+
+    if(
+        dragging &&
+        !swing.monkeyReleased
+    ){
+
+        const power =
+            dragAmount/350;
+
+        swing.angle =
+            -power*1.15;
+
+        swing.velocity = 0;
+
+        updatePositions();
+
+        return;
+
+    }
+
+
+    const gravity = .00065;
+
+    swing.acceleration =
+        -gravity*
+        Math.sin(swing.angle);
+
+    swing.velocity +=
+        swing.acceleration;
+
+    swing.velocity *=
+        swing.damping;
+
+    swing.angle +=
+        swing.velocity;
+
+    updatePositions();
+
+
+    if(
+        !swing.monkeyReleased &&
+        swing.velocity>0 &&
+        swing.angle>.70 &&
+        maximumDrag>15
+    ){
+
+        releaseMonkey();
+
+    }
+
+}
+
+
+/* =====================================================
+   KASTA APA
+===================================================== */
+
+function releaseMonkey(){
+
+    swing.monkeyReleased = true;
+
+    monkey.attached = false;
+
+
+    const power =
+        maximumDrag/350;
+
+    const tangentialSpeed =
+        swing.velocity*
+        swing.ropeLength;
+
+
+    monkey.vx =
+        Math.abs(tangentialSpeed)+
+        power*11;
+
+    monkey.vy =
+        -power*7;
+
+
+    monkey.x = swing.x;
+
+    monkey.y = swing.y-42;
+
+    monkey.rotation = 0;
+
+}
+
+
+/* =====================================================
+   BALLONG-KOLLISION
+===================================================== */
+
+function checkBalloonCollision(){
+
+    for(const balloon of balloons){
+
+        if(balloon.popped) continue;
+
+
+        const dx =
+            monkey.x-balloon.x;
+
+        const dy =
+            monkey.y-balloon.y;
+
+        const distance =
+            Math.sqrt(
+                dx*dx+
+                dy*dy
+            );
+
+
+        if(
+            distance <
+            balloon.radius+22
+        ){
+
+            popBalloon(balloon);
+
+        }
+
+    }
+
+}
+
+
+/* =====================================================
+   SPRÄCK BALLONG
+===================================================== */
+
+function popBalloon(balloon){
+
+    if(balloon.popped) return;
+
+
+    balloon.popped = true;
+
+    balloon.popTime = 1;
+
+
+    message.textContent = "POP! 💥";
+
+    message.style.opacity = "1";
+
+
+    clearTimeout(popTimer);
+
+    popTimer =
+        setTimeout(()=>{
+
+            message.style.opacity = "0";
+
+        },350);
+
+}
+
+
+/* =====================================================
+   APA
+===================================================== */
+
+function updateMonkey(){
+
+    if(monkey.attached) return;
+
+
+    monkey.vy += .42;
+
+    monkey.x += monkey.vx;
+
+    monkey.y += monkey.vy;
+
+    monkey.vx *= .998;
+
+    monkey.rotation += .08;
+
+
+    checkBalloonCollision();
+
+
+    const dx =
+        monkey.x-catcher.x;
+
+    const dy =
+        monkey.y-
+        (catcher.y-85);
+
+    const distance =
+        Math.sqrt(
+            dx*dx+
+            dy*dy
+        );
+
+
+    if(
+        distance<
+        catcher.catchRadius &&
+        monkey.vy>0
+    ){
+
+        catchMonkey();
+
+        return;
+
+    }
+
+
+    if(
+        monkey.x>W+100 ||
+        monkey.y>H+100
+    ){
+
+        resetMonkey();
+
+        return;
+
+    }
+
+
+    const ground =
+        H-75;
+
+
+    if(monkey.y>ground){
+
+        monkey.y = ground;
+
+        monkey.vy *= -.35;
+
+        monkey.vx *= .72;
+
+
+        if(
+            Math.abs(monkey.vy)<1 &&
+            Math.abs(monkey.vx)<.4
+        ){
+
+            resetMonkey();
+
+        }
+
+    }
+
+}
+
+
+/* =====================================================
+   STARTA OM APA
+===================================================== */
+
+function resetMonkey(){
+
+    setupLevel();
+
+}
+
+
+/* =====================================================
+   VINST
+===================================================== */
+
+function catchMonkey(){
+
+    monkey.vx = 0;
+
+    monkey.vy = 0;
+
+    monkey.x = catcher.x;
+
+    monkey.y = catcher.y-85;
+
+    catcher.happy = true;
+
+
+    message.textContent =
+        "CAUGHT! 🎉";
+
+    message.style.opacity = "1";
+
+
+    clearTimeout(popTimer);
+
+    popTimer =
+        setTimeout(()=>{
+
+            message.style.opacity = "0";
+
+            setupLevel();
+
+        },1500);
+
+}
+
+
+/* =====================================================
+   BAKGRUND
+===================================================== */
+
+function drawBackground(){
+
+    const sky =
+        ctx.createLinearGradient(
+            0,0,0,H
+        );
+
+    sky.addColorStop(
+        0,
+        "#5fc8f0"
+    );
+
+    sky.addColorStop(
+        .55,
+        "#c7eff8"
+    );
+
+    sky.addColorStop(
+        1,
+        "#ffd5e2"
+    );
+
+    ctx.fillStyle = sky;
+
+    ctx.fillRect(
+        0,0,W,H
+    );
+
+}
+
+
+/* =====================================================
+   LAMPOR
+===================================================== */
+
+function drawLights(){
+
+    lightTime += .08;
+
+
+    const colors = [
+        "#ffd83d",
+        "#ff4b72",
+        "#5ce1e6",
+        "#ffffff",
+        "#8be35c"
+    ];
+
+
+    for(
+        let x=15;
+        x<W;
+        x+=42
+    ){
+
+        const index =
+            Math.floor(x/42);
+
+        const color =
+            colors[
+                (
+                    index+
+                    Math.floor(lightTime)
+                )%
+                colors.length
+            ];
+
+
+        const pulse =
+            .65+
+            Math.sin(
+                lightTime*2+index
+            )*.35;
+
+
+        ctx.save();
+
+        ctx.globalAlpha = pulse;
+
+        ctx.shadowColor = color;
+
+        ctx.shadowBlur = 18;
+
+        ctx.fillStyle = color;
+
+
+        ctx.beginPath();
+
+        ctx.arc(
+            x,
+            25,
+            7,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+        ctx.restore();
+
+    }
+
+}
+
+
+/* =====================================================
+   FLAGGOR
+===================================================== */
+
+function drawFlags(){
+
+    ctx.strokeStyle = "#754263";
+
+    ctx.lineWidth = 3;
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(0,65);
+
+    ctx.quadraticCurveTo(
+        W/2,
+        125,
+        W,
+        65
+    );
+
+    ctx.stroke();
+
+
+    const colors = [
+        "#ff4775",
+        "#ffd83d",
+        "#46cce4",
+        "#8ddd5c"
+    ];
+
+
+    let i = 0;
+
+
+    for(
+        let x=20;
+        x<W;
+        x+=45
+    ){
+
+        const y =
+            70+
+            Math.sin(
+                x/W*Math.PI
+            )*35;
+
+
+        ctx.fillStyle =
+            colors[i%colors.length];
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            x,y
+        );
+
+        ctx.lineTo(
+            x+23,y+5
+        );
+
+        ctx.lineTo(
+            x+11,y+30
+        );
+
+        ctx.closePath();
+
+        ctx.fill();
+
+        i++;
+
+    }
+
+}
+
+
+/* =====================================================
+   PARISERHJUL
+===================================================== */
+
+function drawFerrisWheel(){
+
+    const x = W*.87;
+
+    const y = H*.34;
+
+    const r =
+        Math.min(
+            100,
+            W*.12
+        );
+
+
+    ferrisAngle += .003;
+
+
+    ctx.save();
+
+    ctx.translate(x,y);
+
+    ctx.rotate(ferrisAngle);
+
+
+    ctx.shadowColor = "#ffd83d";
+
+    ctx.shadowBlur = 15;
+
+    ctx.strokeStyle = "#ffd33e";
+
+    ctx.lineWidth = 7;
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,0,r,
+        0,
+        Math.PI*2
+    );
+
+    ctx.stroke();
+
+
+    for(
+        let i=0;
+        i<8;
+        i++
+    ){
+
+        const a =
+            i*Math.PI/4;
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(0,0);
+
+        ctx.lineTo(
+            Math.cos(a)*r,
+            Math.sin(a)*r
+        );
+
+        ctx.stroke();
+
+    }
+
+
+    for(
+        let i=0;
+        i<8;
+        i++
+    ){
+
+        const a =
+            i*Math.PI/4;
+
+
+        const gx =
+            Math.cos(a)*r;
+
+        const gy =
+            Math.sin(a)*r;
+
+
+        ctx.fillStyle =
+            i%3===0
+            ? "#ff4d78"
+            : i%3===1
+            ? "#42cbe3"
+            : "#ffd83d";
+
+
+        ctx.fillRect(
+            gx-11,
+            gy,
+            22,
+            17
+        );
+
+    }
+
+
+    ctx.shadowBlur = 0;
+
+    ctx.fillStyle = "#fff";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,0,
+        10,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    ctx.restore();
+
+
+    ctx.strokeStyle = "#d63d65";
+
+    ctx.lineWidth = 8;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x-45,
+        H-75
+    );
+
+    ctx.lineTo(
+        x,
+        y
+    );
+
+    ctx.lineTo(
+        x+45,
+        H-75
+    );
+
+    ctx.stroke();
+
+}
+
+
+/* =====================================================
+   TIVOLITÄLT
+===================================================== */
+
+function drawTent(){
+
+    const x = W*.56;
+
+    const baseY = H-75;
+
+    const width =
+        Math.min(
+            240,
+            W*.28
+        );
+
+    const height = 150;
+
+
+    ctx.fillStyle = "#e63e67";
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x-width/2,
+        baseY
+    );
+
+    ctx.lineTo(
+        x,
+        baseY-height
+    );
+
+    ctx.lineTo(
+        x+width/2,
+        baseY
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+
+    ctx.fillStyle = "#ffd83d";
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x-width/2,
+        baseY
+    );
+
+    ctx.lineTo(
+        x-width/6,
+        baseY
+    );
+
+    ctx.lineTo(
+        x,
+        baseY-height
+    );
+
+    ctx.lineTo(
+        x-35,
+        baseY
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x+width/6,
+        baseY
+    );
+
+    ctx.lineTo(
+        x+width/2,
+        baseY
+    );
+
+    ctx.lineTo(
+        x,
+        baseY-height
+    );
+
+    ctx.lineTo(
+        x+35,
+        baseY
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+}
+
+
+/* =====================================================
+   MARK
+===================================================== */
+
+function drawGround(){
+
+    ctx.fillStyle = "#68b945";
+
+    ctx.fillRect(
+        0,
+        H-75,
+        W,
+        75
+    );
+
+
+    ctx.fillStyle = "#3d922b";
+
+    ctx.fillRect(
+        0,
+        H-75,
+        W,
+        8
+    );
+
+
+    for(
+        let x=15;
+        x<W;
+        x+=55
+    ){
+
+        ctx.fillStyle =
+            x%110===0
+            ? "#ffd83d"
+            : "#ff6687";
+
+
+        ctx.beginPath();
+
+        ctx.arc(
+            x,
+            H-30,
+            5,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+    }
+
+}
+
+
+/* =====================================================
+   BALLONGER
+===================================================== */
+
+function drawBalloons(){
+
+    for(const b of balloons){
+
+        if(b.popped){
+
+            if(b.popTime>0){
+
+                b.popTime -= .08;
+
+                ctx.save();
+
+                ctx.globalAlpha =
+                    Math.max(0,b.popTime);
+
+                ctx.fillStyle = b.color;
+
+                for(let i=0;i<6;i++){
+
+                    const a =
+                        i*Math.PI/3;
+
+                    const distance =
+                        (1-b.popTime)*35;
+
+                    ctx.beginPath();
+
+                    ctx.arc(
+                        b.x+
+                        Math.cos(a)*distance,
+                        b.y+
+                        Math.sin(a)*distance,
+                        5,
+                        0,
+                        Math.PI*2
+                    );
+
+                    ctx.fill();
+
+                }
+
+                ctx.restore();
+
+            }
+
+            continue;
+
+        }
+
+
+        drawBalloon(b);
+
+    }
+
+}
+
+
+/* =====================================================
+   BALLONG
+===================================================== */
+
+function drawBalloon(b){
+
+    ctx.save();
+
+
+    ctx.strokeStyle = "#777";
+
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        b.x,
+        b.y+b.radius
+    );
+
+    ctx.quadraticCurveTo(
+        b.x-8,
+        b.y+b.radius+20,
+        b.x,
+        b.y+b.radius+38
+    );
+
+    ctx.stroke();
+
+
+    ctx.fillStyle = b.color;
+
+    ctx.strokeStyle = "white";
+
+    ctx.lineWidth = 3;
+
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        b.x,
+        b.y,
+        b.radius*.78,
+        b.radius,
+        0,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    ctx.stroke();
+
+
+    ctx.fillStyle =
+        "rgba(255,255,255,.65)";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        b.x-b.radius*.25,
+        b.y-b.radius*.32,
+        b.radius*.16,
+        b.radius*.28,
+        -.4,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    ctx.fillStyle = b.color;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        b.x-5,
+        b.y+b.radius-2
+    );
+
+    ctx.lineTo(
+        b.x+5,
+        b.y+b.radius-2
+    );
+
+    ctx.lineTo(
+        b.x,
+        b.y+b.radius+9
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+
+    ctx.restore();
+
+}
+
+
+/* =====================================================
+   GUNGSTÄLLNING
+===================================================== */
+
+function drawSwingSet(){
+
+    const x = swing.anchorX;
+
+    const y = swing.anchorY;
+
+
+    ctx.strokeStyle = "#68452e";
+
+    ctx.lineWidth = 14;
+
+    ctx.lineCap = "round";
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x-110,
+        y
+    );
+
+    ctx.lineTo(
+        x-165,
+        H-75
+    );
+
+    ctx.stroke();
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x+110,
+        y
+    );
+
+    ctx.lineTo(
+        x+165,
+        H-75
+    );
+
+    ctx.stroke();
+
+
+    ctx.lineWidth = 16;
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x-120,
+        y
+    );
+
+    ctx.lineTo(
+        x+120,
+        y
+    );
+
+    ctx.stroke();
+
+
+    ctx.fillStyle = "#ffd83d";
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x-120,
+        y,
+        9,
+        0,
+        Math.PI*2
+    );
+
+    ctx.arc(
+        x+120,
+        y,
+        9,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+}
+
+
+/* =====================================================
+   GUNGA
+===================================================== */
+
+function drawSwing(){
+
+    const x = swing.x;
+
+    const y = swing.y;
+
+
+    ctx.strokeStyle = "#777";
+
+    ctx.lineWidth = 5;
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        swing.anchorX-22,
+        swing.anchorY
+    );
+
+    ctx.lineTo(
+        x-32,
+        y
+    );
+
+    ctx.stroke();
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        swing.anchorX+22,
+        swing.anchorY
+    );
+
+    ctx.lineTo(
+        x+32,
+        y
+    );
+
+    ctx.stroke();
+
+
+    ctx.fillStyle = "#e63e67";
+
+
+    ctx.beginPath();
+
+    ctx.roundRect(
+        x-43,
+        y-3,
+        86,
+        14,
+        5
+    );
+
+    ctx.fill();
+
+
+    ctx.fillStyle = "#ffd83d";
+
+    ctx.fillRect(
+        x-40,
+        y+8,
+        80,
+        5
+    );
+
+}
+
+
+/* =====================================================
+   FÅNGARE
+===================================================== */
+
+function drawCatcher(){
+
+    const x = catcher.x;
+
+    const y = catcher.y;
+
+
+    ctx.save();
+
+
+    ctx.fillStyle =
+        "rgba(0,0,0,.15)";
+
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        x,
+        y+5,
+        45,
+        11,
+        0,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    ctx.strokeStyle = "#405c9b";
+
+    ctx.lineWidth = 10;
+
+    ctx.lineCap = "round";
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x-8,
+        y-28
+    );
+
+    ctx.lineTo(
+        x-15,
+        y
+    );
+
+
+    ctx.moveTo(
+        x+8,
+        y-28
+    );
+
+    ctx.lineTo(
+        x+15,
+        y
+    );
+
+    ctx.stroke();
+
+
+    ctx.fillStyle =
+        "#ff72a7";
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x,
+        y-78
+    );
+
+    ctx.lineTo(
+        x-36,
+        y-27
+    );
+
+    ctx.lineTo(
+        x+36,
+        y-27
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+
+    ctx.fillStyle = "#ffd1aa";
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x,
+        y-103,
+        21,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    ctx.fillStyle = "#70402a";
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x,
+        y-111,
+        23,
+        Math.PI,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x+22,
+        y-108,
+        13,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    ctx.fillStyle = "#222";
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x-7,
+        y-103,
+        3,
+        0,
+        Math.PI*2
+    );
+
+    ctx.arc(
+        x+7,
+        y-103,
+        3,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    ctx.strokeStyle = "#9b4050";
+
+    ctx.lineWidth = 2;
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x,
+        y-98,
+        7,
+        0,
+        Math.PI
+    );
+
+    ctx.stroke();
+
+
+    ctx.strokeStyle = "#ffd1aa";
+
+    ctx.lineWidth = 10;
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x-23,
+        y-65
+    );
+
+    ctx.lineTo(
+        x-47,
+        y-108
+    );
+
+    ctx.lineTo(
+        x-40,
+        y-137
+    );
+
+
+    ctx.moveTo(
+        x+23,
+        y-65
+    );
+
+    ctx.lineTo(
+        x+47,
+        y-108
+    );
+
+    ctx.lineTo(
+        x+40,
+        y-137
+    );
+
+    ctx.stroke();
+
+
+    ctx.fillStyle = "#ffd1aa";
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x-40,
+        y-140,
+        9,
+        0,
+        Math.PI*2
+    );
+
+    ctx.arc(
+        x+40,
+        y-140,
+        9,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    if(catcher.happy){
+
+        ctx.fillStyle = "#ff4775";
+
+        ctx.font = "bold 28px Arial";
+
+        ctx.textAlign = "center";
+
+
+        ctx.fillText(
+            "♥",
+            x-48,
+            y-165
+        );
+
+        ctx.fillText(
+            "♥",
+            x+48,
+            y-165
+        );
+
+    }
+
+
+    ctx.restore();
+
+}
+
+
+/* =====================================================
+   APA
+===================================================== */
+
+function drawMonkey(){
+
+    const x = monkey.x;
+
+    const y = monkey.y;
+
+
+    ctx.save();
+
+
+    if(!monkey.attached){
+
+        ctx.translate(x,y);
+
+        ctx.rotate(monkey.rotation);
+
+        drawCuteMonkey(0,0);
+
+    }
+    else{
+
+        drawCuteMonkey(x,y);
+
+    }
+
+
+    ctx.restore();
+
+}
+
+
+/* =====================================================
+   SÖT APA
+===================================================== */
+
+function drawCuteMonkey(x,y){
+
+    const c = {
+
+        body:"#a96b38",
+        face:"#e4aa75",
+        belly:"#eac08e"
+
+    };
+
+
+    ctx.strokeStyle = c.body;
+
+    ctx.lineWidth = 8;
+
+    ctx.lineCap = "round";
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x+20,
+        y+5,
+        30,
+        -.8,
+        1.6
+    );
+
+    ctx.stroke();
+
+
+    ctx.fillStyle = c.body;
+
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        x,
+        y+11,
+        18,
+        25,
+        0,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    ctx.fillStyle = c.belly;
+
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        x,
+        y+14,
+        12,
+        16,
+        0,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    ctx.fillStyle = c.body;
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x,
+        y-21,
+        23,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x-22,
+        y-22,
+        12,
+        0,
+        Math.PI*2
+    );
+
+    ctx.arc(
+        x+22,
+        y-22,
+        12,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    ctx.fillStyle = "#efa58d";
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x-22,
+        y-22,
+        7,
+        0,
+        Math.PI*2
+    );
+
+    ctx.arc(
+        x+22,
+        y-22,
+        7,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    ctx.fillStyle = c.face;
+
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        x,
+        y-15,
+        15,
+        13,
+        0,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    ctx.fillStyle = "white";
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x-8,
+        y-23,
+        7,
+        0,
+        Math.PI*2
+    );
+
+    ctx.arc(
+        x+8,
+        y-23,
+        7,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    ctx.fillStyle = "#332017";
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x-8,
+        y-23,
+        3.5,
+        0,
+        Math.PI*2
+    );
+
+    ctx.arc(
+        x+8,
+        y-23,
+        3.5,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    ctx.fillStyle = "white";
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x-9,
+        y-24,
+        1.5,
+        0,
+        Math.PI*2
+    );
+
+    ctx.arc(
+        x+7,
+        y-24,
+        1.5,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    ctx.fillStyle = "#653421";
+
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        x,
+        y-12,
+        4,
+        3,
+        0,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    ctx.strokeStyle = "#653421";
+
+    ctx.lineWidth = 2;
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x,
+        y-8,
+        8,
+        0,
+        Math.PI
+    );
+
+    ctx.stroke();
+
+
+    ctx.strokeStyle = c.body;
+
+    ctx.lineWidth = 8;
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x-12,
+        y
+    );
+
+    ctx.lineTo(
+        x-31,
+        y+18
+    );
+
+
+    ctx.moveTo(
+        x+12,
+        y
+    );
+
+    ctx.lineTo(
+        x+31,
+        y+18
+    );
+
+    ctx.stroke();
+
+
+    ctx.fillStyle = c.face;
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x-32,
+        y+19,
+        5,
+        0,
+        Math.PI*2
+    );
+
+    ctx.arc(
+        x+32,
+        y+19,
+        5,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+
+    ctx.strokeStyle = c.body;
+
+    ctx.lineWidth = 8;
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x-9,
+        y+29
+    );
+
+    ctx.lineTo(
+        x-19,
+        y+46
+    );
+
+
+    ctx.moveTo(
+        x+9,
+        y+29
+    );
+
+    ctx.lineTo(
+        x+19,
+        y+46
+    );
+
+    ctx.stroke();
+
+}
+
+
+/* =====================================================
+   RITA ALLT
+===================================================== */
+
+function draw(){
+
+    drawBackground();
+
+    drawLights();
+
+    drawFlags();
+
+    drawFerrisWheel();
+
+    drawTent();
+
+    drawGround();
+
+    drawBalloons();
+
+    drawSwingSet();
+
+    drawCatcher();
+
+    drawSwing();
+
+    drawMonkey();
+
+}
+
+
+/* =====================================================
+   SPELLOOP
+===================================================== */
+
+function gameLoop(){
+
+    updateSwing();
+
+    updateMonkey();
+
+    draw();
+
+    requestAnimationFrame(gameLoop);
+
+}
+
+
+setupLevel();
+
+gameLoop();
+
+</script>
+
+</body>
+</html>

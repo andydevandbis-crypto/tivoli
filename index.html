@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="sv">
 <head>
     <meta charset="UTF-8">
@@ -25,73 +25,37 @@
 
         body {
             min-height: 100vh;
-
             display: flex;
             align-items: center;
             justify-content: center;
-
             padding: 20px;
 
             background:
-                radial-gradient(
-                    circle at 20% 10%,
-                    #ffe66d 0,
-                    transparent 22%
-                ),
-                radial-gradient(
-                    circle at 85% 15%,
-                    #ff6b8a 0,
-                    transparent 24%
-                ),
-                radial-gradient(
-                    circle at 50% 100%,
-                    #62d9ff 0,
-                    transparent 30%
-                ),
+                radial-gradient(circle at 20% 10%, #ffe66d 0, transparent 22%),
+                radial-gradient(circle at 85% 15%, #ff6b8a 0, transparent 24%),
+                radial-gradient(circle at 50% 100%, #62d9ff 0, transparent 30%),
                 #ff5c8a;
 
             color: #fff;
-
             overflow-x: hidden;
         }
-
-
-        /* =====================================================
-           HUVUD
-           ===================================================== */
 
         .language-screen {
             width: min(760px, 100%);
             text-align: center;
         }
 
-
-        /* =====================================================
-           DEKORATION
-           ===================================================== */
-
         .decoration {
             font-size: 42px;
             margin-bottom: 8px;
-
-            text-shadow:
-                0 4px 8px rgba(0, 0, 0, .18);
+            text-shadow: 0 4px 8px rgba(0, 0, 0, .18);
         }
-
-
-        /* =====================================================
-           RUBRIK
-           ===================================================== */
 
         h1 {
             margin: 0;
-
             font-size: clamp(48px, 10vw, 82px);
-
             font-weight: 1000;
-
             letter-spacing: 5px;
-
             line-height: .95;
 
             text-shadow:
@@ -99,64 +63,30 @@
                 7px 7px 0 rgba(0, 0, 0, .18);
         }
 
-
-        /* =====================================================
-           UNDERRUBRIK
-           ===================================================== */
-
         .subtitle {
             margin: 18px 0 35px;
-
             font-size: 19px;
             font-weight: 900;
         }
 
-
-        /* =====================================================
-           SPRÅKOMRÅDE
-           
-           INGEN RAM
-           INGEN BAKGRUND
-           INGEN SKUGGA
-           ===================================================== */
-
         .language-card {
             padding: 0;
-
             background: transparent;
-
             border: none;
             border-radius: 0;
-
             box-shadow: none;
         }
 
-
-        /* =====================================================
-           FLAGGORNA
-           ===================================================== */
-
         .language-buttons {
             display: flex;
-
             justify-content: center;
             align-items: center;
-
             gap: 28px;
-
             width: 100%;
         }
 
-
-        /* =====================================================
-           KNAPPAR
-           
-           SJÄLVA KNAPPEN HAR INGEN RAM ELLER BAKGRUND
-           ===================================================== */
-
         .language-button {
             display: flex;
-
             align-items: center;
             justify-content: center;
 
@@ -167,14 +97,11 @@
             margin: 0;
 
             background: transparent;
-
             border: none;
             border-radius: 0;
-
             box-shadow: none;
 
             text-decoration: none;
-
             cursor: pointer;
 
             transition:
@@ -182,436 +109,199 @@
                 filter .15s ease;
         }
 
-
         .language-button:hover {
             transform: translateY(-5px);
-
             filter: brightness(1.05);
         }
 
-
         .language-button:active {
             transform: translateY(2px);
-
             box-shadow: none;
         }
-
-
-        /* =====================================================
-           FLAGG-STORLEK
-           ===================================================== */
 
         .flag {
             display: block;
-
             width: 150px;
             height: 100px;
-
             margin: 0;
-
             border: none;
-
             border-radius: 8px;
-
             overflow: hidden;
-
             box-shadow: none;
         }
 
-
         .flag svg {
             display: block;
-
             width: 100%;
             height: 100%;
         }
 
-
-        /* =====================================================
-           FOOTER
-           ===================================================== */
-
         .footer-decoration {
             margin-top: 35px;
-
             font-size: 28px;
         }
 
-
-        /* =====================================================
-           MOBIL
-           ===================================================== */
-
         @media (max-width: 650px) {
-
             body {
                 padding: 12px;
             }
-
 
             .language-screen {
                 width: 100%;
             }
 
-
             .decoration {
                 font-size: 30px;
             }
 
-
             h1 {
                 font-size: clamp(44px, 15vw, 70px);
-
                 letter-spacing: 4px;
             }
 
-
             .subtitle {
                 margin: 14px 0 30px;
-
                 font-size: 16px;
             }
 
-
-            .language-card {
-                padding: 0;
-            }
-
-
             .language-buttons {
                 flex-direction: column;
-
                 gap: 22px;
-
                 width: 100%;
             }
-
 
             .language-button {
                 width: 120px;
                 height: 80px;
-
-                padding: 0;
             }
-
 
             .flag {
                 width: 120px;
                 height: 80px;
-
                 border-radius: 7px;
             }
 
-
             .footer-decoration {
                 margin-top: 28px;
-
                 font-size: 23px;
             }
         }
 
-
-        /* =====================================================
-           MYCKET LITEN SKÄRM
-           ===================================================== */
-
         @media (max-width: 380px) {
-
             .language-buttons {
                 gap: 18px;
             }
-
 
             .language-button {
                 width: 105px;
                 height: 70px;
             }
 
-
             .flag {
                 width: 105px;
                 height: 70px;
-
                 border-radius: 6px;
             }
 
-
             .footer-decoration {
                 margin-top: 22px;
-
                 font-size: 20px;
             }
         }
     </style>
 </head>
 
-
 <body>
 
     <main class="language-screen">
-
-
-        <!-- =================================================
-             ÖVRE DEKORATION
-             ================================================= -->
 
         <div class="decoration">
             🎪 ✨ 🎡 ✨ 🎪
         </div>
 
-
-        <!-- =================================================
-             RUBRIK
-             ================================================= -->
-
         <h1>TIVOLI</h1>
-
-
-        <!-- =================================================
-             SPRÅK
-             ================================================= -->
 
         <p class="subtitle">
             Välj språk / Choose language / Wybierz język
         </p>
 
-
-        <!-- =================================================
-             FLAGGOR
-             ================================================= -->
-
         <section class="language-card">
 
             <div class="language-buttons">
 
-
-                <!-- =================================================
-                     SVERIGE
-                     ================================================= -->
-
                 <a
                     class="language-button swedish"
-                    href="svenska.html"
+                    href="spel-svenska.html"
                     aria-label="Svenska"
                 >
-
                     <span class="flag">
-
                         <svg
                             viewBox="0 0 150 100"
                             xmlns="http://www.w3.org/2000/svg"
                             aria-hidden="true"
                         >
-
-                            <rect
-                                width="150"
-                                height="100"
-                                fill="#006AA7"
-                            />
-
-                            <rect
-                                x="45"
-                                y="0"
-                                width="15"
-                                height="100"
-                                fill="#FECC00"
-                            />
-
-                            <rect
-                                x="0"
-                                y="42.5"
-                                width="150"
-                                height="15"
-                                fill="#FECC00"
-                            />
-
+                            <rect width="150" height="100" fill="#006AA7"/>
+                            <rect x="45" y="0" width="15" height="100" fill="#FECC00"/>
+                            <rect x="0" y="42.5" width="150" height="15" fill="#FECC00"/>
                         </svg>
-
                     </span>
-
                 </a>
-
-
-                <!-- =================================================
-                     STORBRITANNIEN – RIKTIG UNION JACK
-                     ================================================= -->
 
                 <a
                     class="language-button english"
-                    href="english.html"
+                    href="spel-english.html"
                     aria-label="English"
                 >
-
                     <span class="flag">
-
                         <svg
                             viewBox="0 0 150 100"
                             xmlns="http://www.w3.org/2000/svg"
                             aria-hidden="true"
                         >
+                            <rect width="150" height="100" fill="#012169"/>
 
-                            <!-- Blå botten -->
+                            <path d="M0 0 L18 0 L150 82 L150 100 L132 100 L0 18 Z"
+                                  fill="#FFFFFF"/>
+                            <path d="M150 0 L132 0 L0 82 L0 100 L18 100 L150 18 Z"
+                                  fill="#FFFFFF"/>
 
-                            <rect
-                                width="150"
-                                height="100"
-                                fill="#012169"
-                            />
+                            <path d="M0 0 L7 0 L150 89 L150 100 L143 100 L0 11 Z"
+                                  fill="#C8102E"/>
+                            <path d="M150 0 L143 0 L0 89 L0 100 L7 100 L150 11 Z"
+                                  fill="#C8102E"/>
 
+                            <rect x="60" y="0" width="30" height="100" fill="#FFFFFF"/>
+                            <rect x="0" y="35" width="150" height="30" fill="#FFFFFF"/>
 
-                            <!-- Vita diagonaler -->
-
-                            <path
-                                d="
-                                    M0 0
-                                    L18 0
-                                    L150 82
-                                    L150 100
-                                    L132 100
-                                    L0 18
-                                    Z
-                                "
-                                fill="#FFFFFF"
-                            />
-
-                            <path
-                                d="
-                                    M150 0
-                                    L132 0
-                                    L0 82
-                                    L0 100
-                                    L18 100
-                                    L150 18
-                                    Z
-                                "
-                                fill="#FFFFFF"
-                            />
-
-
-                            <!-- Röda diagonaler -->
-
-                            <path
-                                d="
-                                    M0 0
-                                    L7 0
-                                    L150 89
-                                    L150 100
-                                    L143 100
-                                    L0 11
-                                    Z
-                                "
-                                fill="#C8102E"
-                            />
-
-                            <path
-                                d="
-                                    M150 0
-                                    L143 0
-                                    L0 89
-                                    L0 100
-                                    L7 100
-                                    L150 11
-                                    Z
-                                "
-                                fill="#C8102E"
-                            />
-
-
-                            <!-- Vitt centralkors -->
-
-                            <rect
-                                x="60"
-                                y="0"
-                                width="30"
-                                height="100"
-                                fill="#FFFFFF"
-                            />
-
-                            <rect
-                                x="0"
-                                y="35"
-                                width="150"
-                                height="30"
-                                fill="#FFFFFF"
-                            />
-
-
-                            <!-- Rött centralkors -->
-
-                            <rect
-                                x="68"
-                                y="0"
-                                width="14"
-                                height="100"
-                                fill="#C8102E"
-                            />
-
-                            <rect
-                                x="0"
-                                y="43"
-                                width="150"
-                                height="14"
-                                fill="#C8102E"
-                            />
-
+                            <rect x="68" y="0" width="14" height="100" fill="#C8102E"/>
+                            <rect x="0" y="43" width="150" height="14" fill="#C8102E"/>
                         </svg>
-
                     </span>
-
                 </a>
-
-
-                <!-- =================================================
-                     POLEN
-                     ================================================= -->
 
                 <a
                     class="language-button polish"
-                    href="polski.html"
+                    href="spel-polski.html"
                     aria-label="Polski"
                 >
-
                     <span class="flag">
-
                         <svg
                             viewBox="0 0 150 100"
                             xmlns="http://www.w3.org/2000/svg"
                             aria-hidden="true"
                         >
-
-                            <rect
-                                width="150"
-                                height="50"
-                                fill="#FFFFFF"
-                            />
-
-                            <rect
-                                y="50"
-                                width="150"
-                                height="50"
-                                fill="#DC143C"
-                            />
-
+                            <rect width="150" height="50" fill="#FFFFFF"/>
+                            <rect y="50" width="150" height="50" fill="#DC143C"/>
                         </svg>
-
                     </span>
-
                 </a>
 
-
             </div>
-
         </section>
-
-
-        <!-- =================================================
-             NEDRE DEKORATION
-             ================================================= -->
 
         <div class="footer-decoration">
             🎠 🎟️ 🎪 🎡 🎪 🎟️ 🎠
         </div>
-
 
     </main>
 
