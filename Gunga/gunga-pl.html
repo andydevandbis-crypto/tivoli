@@ -10,9 +10,10 @@
 content="width=device-width,
 initial-scale=1.0,
 maximum-scale=1.0,
-user-scalable=no">
+user-scalable=no,
+viewport-fit=cover">
 
-<title>Apans Tivoli</title>
+<title>HUSTAWKA - TIVOLI</title>
 
 <style>
 
@@ -24,27 +25,38 @@ user-scalable=no">
 
 html,body {
     margin:0;
+    padding:0;
     width:100%;
     height:100%;
     overflow:hidden;
+    overscroll-behavior:none;
     font-family:Arial,sans-serif;
     background:#65c8ef;
+    -webkit-touch-callout:none;
 }
 
 canvas {
+    position:fixed;
+    inset:0;
     width:100%;
     height:100%;
     display:block;
     touch-action:none;
 }
 
+
+/* =====================================================
+   INFORMATIONSRUTA
+===================================================== */
+
 #info {
     position:fixed;
-    top:15px;
-    left:15px;
+    top:calc(15px + env(safe-area-inset-top,0px));
+    left:calc(15px + env(safe-area-inset-left,0px));
     z-index:20;
 
-    padding:12px 18px;
+    padding:clamp(8px,2.2vw,12px) clamp(12px,3.2vw,18px);
+    max-width:min(78vw,420px);
 
     color:white;
     background:rgba(72,26,84,.86);
@@ -52,19 +64,54 @@ canvas {
     border:3px solid #ffd83d;
     border-radius:15px;
 
-    font-size:17px;
+    font-size:clamp(13px,3.6vw,17px);
     font-weight:bold;
+    line-height:1.3;
 
     box-shadow:0 4px 12px rgba(0,0,0,.25);
+
+    transform:translateX(-120%);
+
+    animation:infoSlideInOut 4s ease-in-out forwards;
 }
+
+
+@keyframes infoSlideInOut {
+
+    0% {
+        transform:translateX(-120%);
+        opacity:0;
+    }
+
+    25% {
+        transform:translateX(0);
+        opacity:1;
+    }
+
+    75% {
+        transform:translateX(0);
+        opacity:1;
+    }
+
+    100% {
+        transform:translateX(-120%);
+        opacity:0;
+    }
+
+}
+
+
+/* =====================================================
+   NIVÅ
+===================================================== */
 
 #level {
     position:fixed;
-    top:15px;
-    right:15px;
+    top:calc(15px + env(safe-area-inset-top,0px));
+    right:calc(15px + env(safe-area-inset-right,0px));
     z-index:20;
 
-    padding:10px 18px;
+    padding:clamp(7px,1.8vw,10px) clamp(12px,3.2vw,18px);
 
     color:white;
     background:#e63e68;
@@ -72,9 +119,15 @@ canvas {
     border:3px solid white;
     border-radius:15px;
 
-    font-size:18px;
+    font-size:clamp(14px,3.6vw,18px);
     font-weight:bold;
+    white-space:nowrap;
 }
+
+
+/* =====================================================
+   MEDDELANDE
+===================================================== */
 
 #message {
     position:fixed;
@@ -86,7 +139,7 @@ canvas {
 
     z-index:50;
 
-    font-size:50px;
+    font-size:clamp(28px,7vw,50px);
     font-weight:bold;
 
     color:white;
@@ -106,20 +159,228 @@ canvas {
     transition:opacity .2s;
 }
 
+
+/* =====================================================
+   LANDSKAPSRUTA
+===================================================== */
+
+#landscapePrompt {
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:9999;
+
+    display:none;
+
+    align-items:center;
+    justify-content:center;
+
+    padding:
+        calc(20px + env(safe-area-inset-top,0px))
+        calc(20px + env(safe-area-inset-right,0px))
+        calc(20px + env(safe-area-inset-bottom,0px))
+        calc(20px + env(safe-area-inset-left,0px));
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(55,18,70,.97),
+            rgba(117,35,91,.97)
+        );
+
+    color:white;
+
+    text-align:center;
+
+}
+
+
+#landscapePrompt .promptBox {
+
+    width:min(88vw,430px);
+
+    padding:28px 24px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #e63e68,
+            #7b3f98
+        );
+
+    border:4px solid #ffd83d;
+
+    border-radius:26px;
+
+    box-shadow:
+        0 12px 35px rgba(0,0,0,.45);
+
+    animation:
+        landscapePulse 1.8s ease-in-out infinite;
+
+}
+
+
+#landscapePrompt .phoneIcon {
+
+    font-size:64px;
+
+    line-height:1;
+
+    margin-bottom:18px;
+
+    display:inline-block;
+
+    animation:
+        rotatePhone 1.8s ease-in-out infinite;
+
+}
+
+
+#landscapePrompt h2 {
+
+    margin:0 0 12px;
+
+    font-size:
+        clamp(25px,7vw,36px);
+
+    line-height:1.1;
+
+
+}
+
+
+#landscapePrompt p {
+
+    margin:0;
+
+    font-size:
+        clamp(16px,4.5vw,21px);
+
+    line-height:1.45;
+
+}
+
+
+#landscapePrompt strong {
+
+    color:#ffd83d;
+
+}
+
+
+@keyframes landscapePulse {
+
+    0%,
+    100% {
+        transform:scale(1);
+    }
+
+    50% {
+        transform:scale(1.025);
+    }
+
+}
+
+
+@keyframes rotatePhone {
+
+    0% {
+        transform:rotate(0deg);
+    }
+
+    35% {
+        transform:rotate(0deg);
+    }
+
+    65% {
+        transform:rotate(90deg);
+    }
+
+    100% {
+        transform:rotate(90deg);
+    }
+
+}
+
+
+/* =====================================================
+   VISA LANDSKAPSRUTA PÅ MOBIL I PORTRÄTT
+===================================================== */
+
+@media screen and (orientation:portrait) and (max-width:900px) {
+
+    #landscapePrompt {
+        display:flex;
+    }
+
+}
+
+
+/* =====================================================
+   DÖLJ RUTAN I LANDSKAP
+===================================================== */
+
+@media screen and (orientation:landscape) {
+
+    #landscapePrompt {
+        display:none;
+    }
+
+}
+
 </style>
 </head>
 
+
 <body>
 
-<div id="info">
-🎪 Pomóż małpce dotrzeć do właściciela.
+
+<!-- =====================================================
+     LANDSKAPSRUTA
+===================================================== -->
+
+<div id="landscapePrompt">
+
+    <div class="promptBox">
+
+        <div class="phoneIcon">
+            📱
+        </div>
+
+        <h2>
+            Vrid mobilen!
+        </h2>
+
+        <p>
+            Aby grać, musisz trzymać telefon
+            w <strong>poziomie</strong>🎪
+        </p>
+
+    </div>
+
 </div>
+
+
+<!-- =====================================================
+     SPELINFORMATION
+===================================================== -->
+
+<div id="info">
+    🎪 Pomóż małpce dotrzeć do właściciela.
+</div>
+
 
 <div id="message"></div>
 
+
 <canvas id="canvas"></canvas>
 
+
 <script>
+
 
 /* =====================================================
    CANVAS
@@ -134,29 +395,118 @@ canvas.getContext("2d");
 const message =
 document.getElementById("message");
 
+
 let W = 0;
 let H = 0;
 
+let scale = 1;
+
+
 function resize(){
 
-    W = window.innerWidth;
-    H = window.innerHeight;
+    const realW =
+        (window.visualViewport &&
+         window.visualViewport.width) ||
+        window.innerWidth;
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-    canvas.width = Math.floor(W * dpr);
-    canvas.height = Math.floor(H * dpr);
+    const realH =
+        (window.visualViewport &&
+         window.visualViewport.height) ||
+        window.innerHeight;
 
-    canvas.style.width = W + "px";
-    canvas.style.height = H + "px";
 
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const dpr =
+        Math.min(
+            window.devicePixelRatio || 1,
+            2
+        );
+
+
+    canvas.width =
+        Math.floor(
+            realW*dpr
+        );
+
+
+    canvas.height =
+        Math.floor(
+            realH*dpr
+        );
+
+
+    canvas.style.width =
+        realW+"px";
+
+
+    canvas.style.height =
+        realH+"px";
+
+
+    scale =
+        Math.min(
+            Math.max(
+                realH/700,
+                .62
+            ),
+            1.8
+        );
+
+
+    W =
+        realW/scale;
+
+
+    H =
+        realH/scale;
+
+
+    ctx.setTransform(
+        dpr*scale,
+        0,
+        0,
+        dpr*scale,
+        0,
+        0
+    );
+
+
+    if(gameReady){
+
+        setupLevel();
+
+    }
 
 }
 
-window.addEventListener("resize",resize);
+
+let gameReady = false;
+
+
+window.addEventListener(
+    "resize",
+    resize
+);
+
+
+window.addEventListener(
+    "orientationchange",
+    resize
+);
+
+
+if(window.visualViewport){
+
+    window.visualViewport.addEventListener(
+        "resize",
+        resize
+    );
+
+}
+
 
 resize();
+
 
 
 /* =====================================================
@@ -177,7 +527,10 @@ let lightTime = 0;
 
 let ferrisAngle = 0;
 
-let popTimer = null;
+let restartTimer = null;
+
+let gameWaitingForRestart = false;
+
 
 
 /* =====================================================
@@ -187,6 +540,7 @@ let popTimer = null;
 const swing = {
 
     anchorX:0,
+
     anchorY:105,
 
     ropeLength:190,
@@ -200,11 +554,13 @@ const swing = {
     damping:.997,
 
     x:0,
+
     y:0,
 
     monkeyReleased:false
 
 };
+
 
 
 /* =====================================================
@@ -214,9 +570,11 @@ const swing = {
 const monkey = {
 
     x:0,
+
     y:0,
 
     vx:0,
+
     vy:0,
 
     attached:true,
@@ -228,6 +586,7 @@ const monkey = {
 };
 
 
+
 /* =====================================================
    FÅNGARE
 ===================================================== */
@@ -235,6 +594,7 @@ const monkey = {
 const catcher = {
 
     x:0,
+
     y:0,
 
     catchRadius:60,
@@ -246,11 +606,13 @@ const catcher = {
 };
 
 
+
 /* =====================================================
    BALLONGER
 ===================================================== */
 
 let balloons = [];
+
 
 
 /* =====================================================
@@ -259,7 +621,20 @@ let balloons = [];
 
 function setupLevel(){
 
-    clearTimeout(popTimer);
+    if(restartTimer !== null){
+
+        clearTimeout(
+            restartTimer
+        );
+
+        restartTimer = null;
+
+    }
+
+
+    gameWaitingForRestart =
+        false;
+
 
     dragging = false;
 
@@ -268,145 +643,264 @@ function setupLevel(){
     maximumDrag = 0;
 
 
-    swing.anchorX = W*.28;
-
-    swing.anchorY = 105;
-
-    swing.angle = 0;
-
-    swing.velocity = 0;
-
-    swing.acceleration = 0;
-
-    swing.monkeyReleased = false;
+    message.style.opacity =
+        "0";
 
 
-    monkey.attached = true;
-
-    monkey.vx = 0;
-
-    monkey.vy = 0;
-
-    monkey.rotation = 0;
-
-    monkey.type = 1;
+    message.textContent =
+        "";
 
 
-    catcher.x = W*.82;
+    swing.anchorX =
+        W*.28;
 
-    catcher.y = H-90;
+    swing.anchorY =
+        105;
 
-    catcher.type = "girl";
+    swing.angle =
+        0;
 
-    catcher.happy = false;
+    swing.velocity =
+        0;
+
+    swing.acceleration =
+        0;
+
+    swing.monkeyReleased =
+        false;
+
+
+    monkey.attached =
+        true;
+
+    monkey.vx =
+        0;
+
+    monkey.vy =
+        0;
+
+    monkey.rotation =
+        0;
+
+    monkey.type =
+        1;
+
+
+    catcher.x =
+        W*.82;
+
+    catcher.y =
+        H-90;
+
+    catcher.type =
+        "girl";
+
+    catcher.happy =
+        false;
 
 
     balloons = [
 
         {
+
             x:W*.50,
+
             y:H*.43,
+
             radius:28,
+
             color:"#ff4775",
+
             popped:false,
+
             popTime:0
+
         },
 
+
         {
+
             x:W*.62,
+
             y:H*.58,
+
             radius:25,
+
             color:"#ffd83d",
+
             popped:false,
+
             popTime:0
+
         },
 
+
         {
+
             x:W*.72,
+
             y:H*.38,
+
             radius:27,
+
             color:"#55cbe6",
+
             popped:false,
+
             popTime:0
+
         },
 
+
         {
+
             x:W*.77,
+
             y:H*.65,
+
             radius:24,
+
             color:"#8ddd5c",
+
             popped:false,
+
             popTime:0
+
         }
 
     ];
+
 
     updatePositions();
 
 }
 
 
+
 /* =====================================================
    INPUT
 ===================================================== */
 
-canvas.addEventListener("pointerdown",e=>{
+canvas.addEventListener(
+    "pointerdown",
+    e=>{
 
-    if(!gameStarted) return;
-
-    if(swing.monkeyReleased) return;
-
-    dragging = true;
-
-    dragStartX = e.clientX;
-
-    dragAmount = 0;
-
-    maximumDrag = 0;
-
-    canvas.setPointerCapture(e.pointerId);
-
-});
+        if(!gameStarted)
+            return;
 
 
-canvas.addEventListener("pointermove",e=>{
+        if(gameWaitingForRestart)
+            return;
 
-    if(!dragging) return;
 
-    const distance =
-        dragStartX-e.clientX;
+        if(swing.monkeyReleased)
+            return;
 
-    dragAmount =
-        Math.max(0,distance);
 
-    dragAmount =
-        Math.min(350,dragAmount);
+        dragging = true;
 
-    maximumDrag =
-        Math.max(
-            maximumDrag,
-            dragAmount
+
+        dragStartX =
+            e.clientX;
+
+
+        dragAmount =
+            0;
+
+
+        maximumDrag =
+            0;
+
+
+        canvas.setPointerCapture(
+            e.pointerId
         );
 
-});
+    }
+);
 
 
-canvas.addEventListener("pointerup",()=>{
 
-    if(!dragging) return;
+canvas.addEventListener(
+    "pointermove",
+    e=>{
 
-    dragging = false;
+        if(!dragging)
+            return;
 
-    const power =
-        maximumDrag/350;
 
-    swing.velocity =
-        power*.075;
+        if(gameWaitingForRestart)
+            return;
 
-    swing.angle =
-        -power*1.15;
 
-});
+        const distance =
+            (
+                dragStartX -
+                e.clientX
+            )/scale;
+
+
+        dragAmount =
+            Math.max(
+                0,
+                distance
+            );
+
+
+        dragAmount =
+            Math.min(
+                350,
+                dragAmount
+            );
+
+
+        maximumDrag =
+            Math.max(
+                maximumDrag,
+                dragAmount
+            );
+
+    }
+);
+
+
+
+canvas.addEventListener(
+    "pointerup",
+    ()=>{
+
+        if(!dragging)
+            return;
+
+
+        if(gameWaitingForRestart){
+
+            dragging =
+                false;
+
+            return;
+
+        }
+
+
+        dragging =
+            false;
+
+
+        const power =
+            maximumDrag/350;
+
+
+        swing.velocity =
+            power*.075;
+
+
+        swing.angle =
+            -power*1.15;
+
+    }
+);
+
 
 
 /* =====================================================
@@ -417,24 +911,32 @@ function updatePositions(){
 
     swing.x =
         swing.anchorX+
-        Math.sin(swing.angle)*
+        Math.sin(
+            swing.angle
+        )*
         swing.ropeLength;
+
 
     swing.y =
         swing.anchorY+
-        Math.cos(swing.angle)*
+        Math.cos(
+            swing.angle
+        )*
         swing.ropeLength;
 
 
     if(monkey.attached){
 
-        monkey.x = swing.x;
+        monkey.x =
+            swing.x;
 
-        monkey.y = swing.y-42;
+        monkey.y =
+            swing.y-42;
 
     }
 
 }
+
 
 
 /* =====================================================
@@ -443,21 +945,35 @@ function updatePositions(){
 
 function updateSwing(){
 
-    if(!gameStarted) return;
+    if(!gameStarted)
+        return;
 
+
+    /*
+       Gungan fortsätter svänga även efter
+       MISS eller CAUGHT.
+
+       Dragning är däremot avstängd under
+       väntetiden.
+    */
 
     if(
         dragging &&
-        !swing.monkeyReleased
+        !swing.monkeyReleased &&
+        !gameWaitingForRestart
     ){
 
         const power =
             dragAmount/350;
 
+
         swing.angle =
             -power*1.15;
 
-        swing.velocity = 0;
+
+        swing.velocity =
+            0;
+
 
         updatePositions();
 
@@ -466,26 +982,35 @@ function updateSwing(){
     }
 
 
-    const gravity = .00065;
+    const gravity =
+        .00065;
+
 
     swing.acceleration =
         -gravity*
-        Math.sin(swing.angle);
+        Math.sin(
+            swing.angle
+        );
+
 
     swing.velocity +=
         swing.acceleration;
 
+
     swing.velocity *=
         swing.damping;
 
+
     swing.angle +=
         swing.velocity;
+
 
     updatePositions();
 
 
     if(
         !swing.monkeyReleased &&
+        !gameWaitingForRestart &&
         swing.velocity>0 &&
         swing.angle>.70 &&
         maximumDrag>15
@@ -498,19 +1023,24 @@ function updateSwing(){
 }
 
 
+
 /* =====================================================
    KASTA APA
 ===================================================== */
 
 function releaseMonkey(){
 
-    swing.monkeyReleased = true;
+    swing.monkeyReleased =
+        true;
 
-    monkey.attached = false;
+
+    monkey.attached =
+        false;
 
 
     const power =
         maximumDrag/350;
+
 
     const tangentialSpeed =
         swing.velocity*
@@ -518,20 +1048,29 @@ function releaseMonkey(){
 
 
     monkey.vx =
-        Math.abs(tangentialSpeed)+
+        Math.abs(
+            tangentialSpeed
+        )+
         power*11;
+
 
     monkey.vy =
         -power*7;
 
 
-    monkey.x = swing.x;
+    monkey.x =
+        swing.x;
 
-    monkey.y = swing.y-42;
 
-    monkey.rotation = 0;
+    monkey.y =
+        swing.y-42;
+
+
+    monkey.rotation =
+        0;
 
 }
+
 
 
 /* =====================================================
@@ -540,16 +1079,23 @@ function releaseMonkey(){
 
 function checkBalloonCollision(){
 
-    for(const balloon of balloons){
+    for(
+        const balloon of balloons
+    ){
 
-        if(balloon.popped) continue;
+        if(balloon.popped)
+            continue;
 
 
         const dx =
-            monkey.x-balloon.x;
+            monkey.x-
+            balloon.x;
+
 
         const dy =
-            monkey.y-balloon.y;
+            monkey.y-
+            balloon.y;
+
 
         const distance =
             Math.sqrt(
@@ -559,11 +1105,13 @@ function checkBalloonCollision(){
 
 
         if(
-            distance <
+            distance<
             balloon.radius+22
         ){
 
-            popBalloon(balloon);
+            popBalloon(
+                balloon
+            );
 
         }
 
@@ -572,35 +1120,53 @@ function checkBalloonCollision(){
 }
 
 
+
 /* =====================================================
    SPRÄCK BALLONG
 ===================================================== */
 
-function popBalloon(balloon){
+function popBalloon(
+    balloon
+){
 
-    if(balloon.popped) return;
-
-
-    balloon.popped = true;
-
-    balloon.popTime = 1;
+    if(balloon.popped)
+        return;
 
 
-    message.textContent = "POP! 💥";
+    balloon.popped =
+        true;
 
-    message.style.opacity = "1";
+
+    balloon.popTime =
+        1;
 
 
-    clearTimeout(popTimer);
+    message.textContent =
+        "POP! 💥";
 
-    popTimer =
-        setTimeout(()=>{
 
-            message.style.opacity = "0";
+    message.style.opacity =
+        "1";
 
-        },350);
+
+    setTimeout(
+        ()=>{
+
+            if(
+                !gameWaitingForRestart
+            ){
+
+                message.style.opacity =
+                    "0";
+
+            }
+
+        },
+        350
+    );
 
 }
+
 
 
 /* =====================================================
@@ -609,29 +1175,48 @@ function popBalloon(balloon){
 
 function updateMonkey(){
 
-    if(monkey.attached) return;
+    if(monkey.attached)
+        return;
 
 
-    monkey.vy += .42;
+    if(gameWaitingForRestart)
+        return;
 
-    monkey.x += monkey.vx;
 
-    monkey.y += monkey.vy;
+    monkey.vy +=
+        .42;
 
-    monkey.vx *= .998;
 
-    monkey.rotation += .08;
+    monkey.x +=
+        monkey.vx;
+
+
+    monkey.y +=
+        monkey.vy;
+
+
+    monkey.vx *=
+        .998;
+
+
+    monkey.rotation +=
+        .08;
 
 
     checkBalloonCollision();
 
 
     const dx =
-        monkey.x-catcher.x;
+        monkey.x-
+        catcher.x;
+
 
     const dy =
         monkey.y-
-        (catcher.y-85);
+        (
+            catcher.y-85
+        );
+
 
     const distance =
         Math.sqrt(
@@ -653,12 +1238,18 @@ function updateMonkey(){
     }
 
 
+    /*
+       MISS 1:
+       Apan flyger utanför spelområdet.
+    */
+
     if(
         monkey.x>W+100 ||
+        monkey.x<-100 ||
         monkey.y>H+100
     ){
 
-        resetMonkey();
+        missMonkey();
 
         return;
 
@@ -669,38 +1260,61 @@ function updateMonkey(){
         H-75;
 
 
+    /*
+       MISS 2:
+       Apan träffar marken.
+    */
+
     if(monkey.y>ground){
 
-        monkey.y = ground;
-
-        monkey.vy *= -.35;
-
-        monkey.vx *= .72;
+        monkey.y =
+            ground;
 
 
-        if(
-            Math.abs(monkey.vy)<1 &&
-            Math.abs(monkey.vx)<.4
-        ){
+        missMonkey();
 
-            resetMonkey();
-
-        }
+        return;
 
     }
 
 }
 
 
+
 /* =====================================================
-   STARTA OM APA
+   MISS + 5 SEKUNDERS OMSTART
 ===================================================== */
 
-function resetMonkey(){
+function missMonkey(){
 
-    setupLevel();
+    if(gameWaitingForRestart)
+        return;
+
+
+    gameWaitingForRestart =
+        true;
+
+
+    message.textContent =
+        "PUDŁO!";
+
+
+    message.style.opacity =
+        "1";
+
+
+    restartTimer =
+        setTimeout(
+            ()=>{
+
+                setupLevel();
+
+            },
+            5000
+        );
 
 }
+
 
 
 /* =====================================================
@@ -709,35 +1323,60 @@ function resetMonkey(){
 
 function catchMonkey(){
 
-    monkey.vx = 0;
+    if(gameWaitingForRestart)
+        return;
 
-    monkey.vy = 0;
 
-    monkey.x = catcher.x;
+    gameWaitingForRestart =
+        true;
 
-    monkey.y = catcher.y-85;
 
-    catcher.happy = true;
+    monkey.vx =
+        0;
+
+
+    monkey.vy =
+        0;
+
+
+    monkey.x =
+        catcher.x;
+
+
+    monkey.y =
+        catcher.y-85;
+
+
+    catcher.happy =
+        true;
 
 
     message.textContent =
-        "ZŁAPANA! 🎉";
-
-    message.style.opacity = "1";
+        "ZŁAPANA!🎉";
 
 
-    clearTimeout(popTimer);
+    message.style.opacity =
+        "1";
 
-    popTimer =
-        setTimeout(()=>{
 
-            message.style.opacity = "0";
+    /*
+	Aby grać, musisz trzymać telefon
+	w <strong>poziomie</strong>
 
-            setupLevel();
+    */
 
-        },1500);
+    restartTimer =
+        setTimeout(
+            ()=>{
+
+                setupLevel();
+
+            },
+            5000
+        );
 
 }
+
 
 
 /* =====================================================
@@ -748,31 +1387,44 @@ function drawBackground(){
 
     const sky =
         ctx.createLinearGradient(
-            0,0,0,H
+            0,
+            0,
+            0,
+            H
         );
+
 
     sky.addColorStop(
         0,
         "#5fc8f0"
     );
 
+
     sky.addColorStop(
         .55,
         "#c7eff8"
     );
+
 
     sky.addColorStop(
         1,
         "#ffd5e2"
     );
 
-    ctx.fillStyle = sky;
+
+    ctx.fillStyle =
+        sky;
+
 
     ctx.fillRect(
-        0,0,W,H
+        0,
+        0,
+        W,
+        H
     );
 
 }
+
 
 
 /* =====================================================
@@ -781,15 +1433,22 @@ function drawBackground(){
 
 function drawLights(){
 
-    lightTime += .08;
+    lightTime +=
+        .08;
 
 
     const colors = [
+
         "#ffd83d",
+
         "#ff4b72",
+
         "#5ce1e6",
+
         "#ffffff",
+
         "#8be35c"
+
     ];
 
 
@@ -800,13 +1459,18 @@ function drawLights(){
     ){
 
         const index =
-            Math.floor(x/42);
+            Math.floor(
+                x/42
+            );
+
 
         const color =
             colors[
                 (
                     index+
-                    Math.floor(lightTime)
+                    Math.floor(
+                        lightTime
+                    )
                 )%
                 colors.length
             ];
@@ -815,22 +1479,32 @@ function drawLights(){
         const pulse =
             .65+
             Math.sin(
-                lightTime*2+index
+                lightTime*2+
+                index
             )*.35;
 
 
         ctx.save();
 
-        ctx.globalAlpha = pulse;
 
-        ctx.shadowColor = color;
+        ctx.globalAlpha =
+            pulse;
 
-        ctx.shadowBlur = 18;
 
-        ctx.fillStyle = color;
+        ctx.shadowColor =
+            color;
+
+
+        ctx.shadowBlur =
+            18;
+
+
+        ctx.fillStyle =
+            color;
 
 
         ctx.beginPath();
+
 
         ctx.arc(
             x,
@@ -840,7 +1514,9 @@ function drawLights(){
             Math.PI*2
         );
 
+
         ctx.fill();
+
 
         ctx.restore();
 
@@ -849,20 +1525,29 @@ function drawLights(){
 }
 
 
+
 /* =====================================================
    FLAGGOR
 ===================================================== */
 
 function drawFlags(){
 
-    ctx.strokeStyle = "#754263";
+    ctx.strokeStyle =
+        "#754263";
 
-    ctx.lineWidth = 3;
+
+    ctx.lineWidth =
+        3;
 
 
     ctx.beginPath();
 
-    ctx.moveTo(0,65);
+
+    ctx.moveTo(
+        0,
+        65
+    );
+
 
     ctx.quadraticCurveTo(
         W/2,
@@ -871,18 +1556,25 @@ function drawFlags(){
         65
     );
 
+
     ctx.stroke();
 
 
     const colors = [
+
         "#ff4775",
+
         "#ffd83d",
+
         "#46cce4",
+
         "#8ddd5c"
+
     ];
 
 
-    let i = 0;
+    let i =
+        0;
 
 
     for(
@@ -899,26 +1591,38 @@ function drawFlags(){
 
 
         ctx.fillStyle =
-            colors[i%colors.length];
+            colors[
+                i%
+                colors.length
+            ];
 
 
         ctx.beginPath();
 
+
         ctx.moveTo(
-            x,y
+            x,
+            y
         );
 
-        ctx.lineTo(
-            x+23,y+5
-        );
 
         ctx.lineTo(
-            x+11,y+30
+            x+23,
+            y+5
         );
+
+
+        ctx.lineTo(
+            x+11,
+            y+30
+        );
+
 
         ctx.closePath();
 
+
         ctx.fill();
+
 
         i++;
 
@@ -927,15 +1631,20 @@ function drawFlags(){
 }
 
 
+
 /* =====================================================
    PARISERHJUL
 ===================================================== */
 
 function drawFerrisWheel(){
 
-    const x = W*.87;
+    const x =
+        W*.87;
 
-    const y = H*.34;
+
+    const y =
+        H*.34;
+
 
     const r =
         Math.min(
@@ -944,32 +1653,51 @@ function drawFerrisWheel(){
         );
 
 
-    ferrisAngle += .003;
+    ferrisAngle +=
+        .003;
 
 
     ctx.save();
 
-    ctx.translate(x,y);
 
-    ctx.rotate(ferrisAngle);
+    ctx.translate(
+        x,
+        y
+    );
 
 
-    ctx.shadowColor = "#ffd83d";
+    ctx.rotate(
+        ferrisAngle
+    );
 
-    ctx.shadowBlur = 15;
 
-    ctx.strokeStyle = "#ffd33e";
+    ctx.shadowColor =
+        "#ffd83d";
 
-    ctx.lineWidth = 7;
+
+    ctx.shadowBlur =
+        15;
+
+
+    ctx.strokeStyle =
+        "#ffd33e";
+
+
+    ctx.lineWidth =
+        7;
 
 
     ctx.beginPath();
 
+
     ctx.arc(
-        0,0,r,
+        0,
+        0,
+        r,
         0,
         Math.PI*2
     );
+
 
     ctx.stroke();
 
@@ -986,12 +1714,18 @@ function drawFerrisWheel(){
 
         ctx.beginPath();
 
-        ctx.moveTo(0,0);
+
+        ctx.moveTo(
+            0,
+            0
+        );
+
 
         ctx.lineTo(
             Math.cos(a)*r,
             Math.sin(a)*r
         );
+
 
         ctx.stroke();
 
@@ -1010,6 +1744,7 @@ function drawFerrisWheel(){
 
         const gx =
             Math.cos(a)*r;
+
 
         const gy =
             Math.sin(a)*r;
@@ -1033,18 +1768,25 @@ function drawFerrisWheel(){
     }
 
 
-    ctx.shadowBlur = 0;
+    ctx.shadowBlur =
+        0;
 
-    ctx.fillStyle = "#fff";
+
+    ctx.fillStyle =
+        "#fff";
+
 
     ctx.beginPath();
 
+
     ctx.arc(
-        0,0,
+        0,
+        0,
         10,
         0,
         Math.PI*2
     );
+
 
     ctx.fill();
 
@@ -1052,30 +1794,39 @@ function drawFerrisWheel(){
     ctx.restore();
 
 
-    ctx.strokeStyle = "#d63d65";
+    ctx.strokeStyle =
+        "#d63d65";
 
-    ctx.lineWidth = 8;
+
+    ctx.lineWidth =
+        8;
+
 
     ctx.beginPath();
+
 
     ctx.moveTo(
         x-45,
         H-75
     );
 
+
     ctx.lineTo(
         x,
         y
     );
+
 
     ctx.lineTo(
         x+45,
         H-75
     );
 
+
     ctx.stroke();
 
 }
+
 
 
 /* =====================================================
@@ -1084,9 +1835,13 @@ function drawFerrisWheel(){
 
 function drawTent(){
 
-    const x = W*.56;
+    const x =
+        W*.56;
 
-    const baseY = H-75;
+
+    const baseY =
+        H-75;
+
 
     const width =
         Math.min(
@@ -1094,91 +1849,113 @@ function drawTent(){
             W*.28
         );
 
-    const height = 150;
+
+    const height =
+        150;
 
 
-    ctx.fillStyle = "#e63e67";
+    ctx.fillStyle =
+        "#e63e67";
 
 
     ctx.beginPath();
+
 
     ctx.moveTo(
         x-width/2,
         baseY
     );
+
 
     ctx.lineTo(
         x,
         baseY-height
     );
 
+
     ctx.lineTo(
         x+width/2,
         baseY
     );
 
+
     ctx.closePath();
+
 
     ctx.fill();
 
 
-    ctx.fillStyle = "#ffd83d";
+    ctx.fillStyle =
+        "#ffd83d";
 
 
     ctx.beginPath();
+
 
     ctx.moveTo(
         x-width/2,
         baseY
     );
+
 
     ctx.lineTo(
         x-width/6,
         baseY
     );
 
+
     ctx.lineTo(
         x,
         baseY-height
     );
+
 
     ctx.lineTo(
         x-35,
         baseY
     );
 
+
     ctx.closePath();
+
 
     ctx.fill();
 
 
     ctx.beginPath();
 
+
     ctx.moveTo(
         x+width/6,
         baseY
     );
+
 
     ctx.lineTo(
         x+width/2,
         baseY
     );
 
+
     ctx.lineTo(
         x,
         baseY-height
     );
+
 
     ctx.lineTo(
         x+35,
         baseY
     );
 
+
     ctx.closePath();
+
 
     ctx.fill();
 
 }
+
 
 
 /* =====================================================
@@ -1187,7 +1964,9 @@ function drawTent(){
 
 function drawGround(){
 
-    ctx.fillStyle = "#68b945";
+    ctx.fillStyle =
+        "#68b945";
+
 
     ctx.fillRect(
         0,
@@ -1197,7 +1976,9 @@ function drawGround(){
     );
 
 
-    ctx.fillStyle = "#3d922b";
+    ctx.fillStyle =
+        "#3d922b";
+
 
     ctx.fillRect(
         0,
@@ -1221,6 +2002,7 @@ function drawGround(){
 
         ctx.beginPath();
 
+
         ctx.arc(
             x,
             H-30,
@@ -1229,11 +2011,13 @@ function drawGround(){
             Math.PI*2
         );
 
+
         ctx.fill();
 
     }
 
 }
+
 
 
 /* =====================================================
@@ -1242,48 +2026,78 @@ function drawGround(){
 
 function drawBalloons(){
 
-    for(const b of balloons){
+    for(
+        const b of balloons
+    ){
 
         if(b.popped){
 
             if(b.popTime>0){
 
-                b.popTime -= .08;
+                b.popTime -=
+                    .08;
+
 
                 ctx.save();
 
+
                 ctx.globalAlpha =
-                    Math.max(0,b.popTime);
+                    Math.max(
+                        0,
+                        b.popTime
+                    );
 
-                ctx.fillStyle = b.color;
 
-                for(let i=0;i<6;i++){
+                ctx.fillStyle =
+                    b.color;
+
+
+                for(
+                    let i=0;
+                    i<6;
+                    i++
+                ){
 
                     const a =
                         i*Math.PI/3;
 
+
                     const distance =
-                        (1-b.popTime)*35;
+                        (
+                            1-
+                            b.popTime
+                        )*35;
+
 
                     ctx.beginPath();
 
+
                     ctx.arc(
                         b.x+
-                        Math.cos(a)*distance,
+                        Math.cos(a)*
+                        distance,
+
                         b.y+
-                        Math.sin(a)*distance,
+                        Math.sin(a)*
+                        distance,
+
                         5,
+
                         0,
+
                         Math.PI*2
                     );
+
 
                     ctx.fill();
 
                 }
 
+
                 ctx.restore();
 
             }
+
 
             continue;
 
@@ -1297,6 +2111,7 @@ function drawBalloons(){
 }
 
 
+
 /* =====================================================
    BALLONG
 ===================================================== */
@@ -1306,16 +2121,22 @@ function drawBalloon(b){
     ctx.save();
 
 
-    ctx.strokeStyle = "#777";
+    ctx.strokeStyle =
+        "#777";
 
-    ctx.lineWidth = 2;
+
+    ctx.lineWidth =
+        2;
+
 
     ctx.beginPath();
+
 
     ctx.moveTo(
         b.x,
         b.y+b.radius
     );
+
 
     ctx.quadraticCurveTo(
         b.x-8,
@@ -1324,17 +2145,24 @@ function drawBalloon(b){
         b.y+b.radius+38
     );
 
+
     ctx.stroke();
 
 
-    ctx.fillStyle = b.color;
+    ctx.fillStyle =
+        b.color;
 
-    ctx.strokeStyle = "white";
 
-    ctx.lineWidth = 3;
+    ctx.strokeStyle =
+        "white";
+
+
+    ctx.lineWidth =
+        3;
 
 
     ctx.beginPath();
+
 
     ctx.ellipse(
         b.x,
@@ -1346,7 +2174,9 @@ function drawBalloon(b){
         Math.PI*2
     );
 
+
     ctx.fill();
+
 
     ctx.stroke();
 
@@ -1354,7 +2184,9 @@ function drawBalloon(b){
     ctx.fillStyle =
         "rgba(255,255,255,.65)";
 
+
     ctx.beginPath();
+
 
     ctx.ellipse(
         b.x-b.radius*.25,
@@ -1366,29 +2198,37 @@ function drawBalloon(b){
         Math.PI*2
     );
 
+
     ctx.fill();
 
 
-    ctx.fillStyle = b.color;
+    ctx.fillStyle =
+        b.color;
+
 
     ctx.beginPath();
+
 
     ctx.moveTo(
         b.x-5,
         b.y+b.radius-2
     );
 
+
     ctx.lineTo(
         b.x+5,
         b.y+b.radius-2
     );
+
 
     ctx.lineTo(
         b.x,
         b.y+b.radius+9
     );
 
+
     ctx.closePath();
+
 
     ctx.fill();
 
@@ -1398,76 +2238,97 @@ function drawBalloon(b){
 }
 
 
+
 /* =====================================================
    GUNGSTÄLLNING
 ===================================================== */
 
 function drawSwingSet(){
 
-    const x = swing.anchorX;
+    const x =
+        swing.anchorX;
 
-    const y = swing.anchorY;
+
+    const y =
+        swing.anchorY;
 
 
-    ctx.strokeStyle = "#68452e";
+    ctx.strokeStyle =
+        "#68452e";
 
-    ctx.lineWidth = 14;
 
-    ctx.lineCap = "round";
+    ctx.lineWidth =
+        14;
+
+
+    ctx.lineCap =
+        "round";
 
 
     ctx.beginPath();
+
 
     ctx.moveTo(
         x-110,
         y
     );
 
+
     ctx.lineTo(
         x-165,
         H-75
     );
 
+
     ctx.stroke();
 
 
     ctx.beginPath();
+
 
     ctx.moveTo(
         x+110,
         y
     );
 
+
     ctx.lineTo(
         x+165,
         H-75
     );
 
+
     ctx.stroke();
 
 
-    ctx.lineWidth = 16;
+    ctx.lineWidth =
+        16;
 
 
     ctx.beginPath();
+
 
     ctx.moveTo(
         x-120,
         y
     );
 
+
     ctx.lineTo(
         x+120,
         y
     );
 
+
     ctx.stroke();
 
 
-    ctx.fillStyle = "#ffd83d";
+    ctx.fillStyle =
+        "#ffd83d";
 
 
     ctx.beginPath();
+
 
     ctx.arc(
         x-120,
@@ -1477,6 +2338,7 @@ function drawSwingSet(){
         Math.PI*2
     );
 
+
     ctx.arc(
         x+120,
         y,
@@ -1485,9 +2347,11 @@ function drawSwingSet(){
         Math.PI*2
     );
 
+
     ctx.fill();
 
 }
+
 
 
 /* =====================================================
@@ -1496,50 +2360,64 @@ function drawSwingSet(){
 
 function drawSwing(){
 
-    const x = swing.x;
+    const x =
+        swing.x;
 
-    const y = swing.y;
+
+    const y =
+        swing.y;
 
 
-    ctx.strokeStyle = "#777";
+    ctx.strokeStyle =
+        "#777";
 
-    ctx.lineWidth = 5;
+
+    ctx.lineWidth =
+        5;
 
 
     ctx.beginPath();
+
 
     ctx.moveTo(
         swing.anchorX-22,
         swing.anchorY
     );
 
+
     ctx.lineTo(
         x-32,
         y
     );
 
+
     ctx.stroke();
 
 
     ctx.beginPath();
+
 
     ctx.moveTo(
         swing.anchorX+22,
         swing.anchorY
     );
 
+
     ctx.lineTo(
         x+32,
         y
     );
 
+
     ctx.stroke();
 
 
-    ctx.fillStyle = "#e63e67";
+    ctx.fillStyle =
+        "#e63e67";
 
 
     ctx.beginPath();
+
 
     ctx.roundRect(
         x-43,
@@ -1549,10 +2427,13 @@ function drawSwing(){
         5
     );
 
+
     ctx.fill();
 
 
-    ctx.fillStyle = "#ffd83d";
+    ctx.fillStyle =
+        "#ffd83d";
+
 
     ctx.fillRect(
         x-40,
@@ -1564,15 +2445,19 @@ function drawSwing(){
 }
 
 
+
 /* =====================================================
    FÅNGARE
 ===================================================== */
 
 function drawCatcher(){
 
-    const x = catcher.x;
+    const x =
+        catcher.x;
 
-    const y = catcher.y;
+
+    const y =
+        catcher.y;
 
 
     ctx.save();
@@ -1584,6 +2469,7 @@ function drawCatcher(){
 
     ctx.beginPath();
 
+
     ctx.ellipse(
         x,
         y+5,
@@ -1594,22 +2480,30 @@ function drawCatcher(){
         Math.PI*2
     );
 
+
     ctx.fill();
 
 
-    ctx.strokeStyle = "#405c9b";
+    ctx.strokeStyle =
+        "#405c9b";
 
-    ctx.lineWidth = 10;
 
-    ctx.lineCap = "round";
+    ctx.lineWidth =
+        10;
+
+
+    ctx.lineCap =
+        "round";
 
 
     ctx.beginPath();
+
 
     ctx.moveTo(
         x-8,
         y-28
     );
+
 
     ctx.lineTo(
         x-15,
@@ -1622,10 +2516,12 @@ function drawCatcher(){
         y-28
     );
 
+
     ctx.lineTo(
         x+15,
         y
     );
+
 
     ctx.stroke();
 
@@ -1636,30 +2532,37 @@ function drawCatcher(){
 
     ctx.beginPath();
 
+
     ctx.moveTo(
         x,
         y-78
     );
+
 
     ctx.lineTo(
         x-36,
         y-27
     );
 
+
     ctx.lineTo(
         x+36,
         y-27
     );
 
+
     ctx.closePath();
+
 
     ctx.fill();
 
 
-    ctx.fillStyle = "#ffd1aa";
+    ctx.fillStyle =
+        "#ffd1aa";
 
 
     ctx.beginPath();
+
 
     ctx.arc(
         x,
@@ -1669,13 +2572,16 @@ function drawCatcher(){
         Math.PI*2
     );
 
+
     ctx.fill();
 
 
-    ctx.fillStyle = "#70402a";
+    ctx.fillStyle =
+        "#70402a";
 
 
     ctx.beginPath();
+
 
     ctx.arc(
         x,
@@ -1685,10 +2591,12 @@ function drawCatcher(){
         Math.PI*2
     );
 
+
     ctx.fill();
 
 
     ctx.beginPath();
+
 
     ctx.arc(
         x+22,
@@ -1698,13 +2606,16 @@ function drawCatcher(){
         Math.PI*2
     );
 
+
     ctx.fill();
 
 
-    ctx.fillStyle = "#222";
+    ctx.fillStyle =
+        "#222";
 
 
     ctx.beginPath();
+
 
     ctx.arc(
         x-7,
@@ -1714,6 +2625,7 @@ function drawCatcher(){
         Math.PI*2
     );
 
+
     ctx.arc(
         x+7,
         y-103,
@@ -1722,15 +2634,20 @@ function drawCatcher(){
         Math.PI*2
     );
 
+
     ctx.fill();
 
 
-    ctx.strokeStyle = "#9b4050";
+    ctx.strokeStyle =
+        "#9b4050";
 
-    ctx.lineWidth = 2;
+
+    ctx.lineWidth =
+        2;
 
 
     ctx.beginPath();
+
 
     ctx.arc(
         x,
@@ -1740,25 +2657,32 @@ function drawCatcher(){
         Math.PI
     );
 
+
     ctx.stroke();
 
 
-    ctx.strokeStyle = "#ffd1aa";
+    ctx.strokeStyle =
+        "#ffd1aa";
 
-    ctx.lineWidth = 10;
+
+    ctx.lineWidth =
+        10;
 
 
     ctx.beginPath();
+
 
     ctx.moveTo(
         x-23,
         y-65
     );
 
+
     ctx.lineTo(
         x-47,
         y-108
     );
+
 
     ctx.lineTo(
         x-40,
@@ -1771,23 +2695,28 @@ function drawCatcher(){
         y-65
     );
 
+
     ctx.lineTo(
         x+47,
         y-108
     );
+
 
     ctx.lineTo(
         x+40,
         y-137
     );
 
+
     ctx.stroke();
 
 
-    ctx.fillStyle = "#ffd1aa";
+    ctx.fillStyle =
+        "#ffd1aa";
 
 
     ctx.beginPath();
+
 
     ctx.arc(
         x-40,
@@ -1797,6 +2726,7 @@ function drawCatcher(){
         Math.PI*2
     );
 
+
     ctx.arc(
         x+40,
         y-140,
@@ -1805,16 +2735,22 @@ function drawCatcher(){
         Math.PI*2
     );
 
+
     ctx.fill();
 
 
     if(catcher.happy){
 
-        ctx.fillStyle = "#ff4775";
+        ctx.fillStyle =
+            "#ff4775";
 
-        ctx.font = "bold 28px Arial";
 
-        ctx.textAlign = "center";
+        ctx.font =
+            "bold 28px Arial";
+
+
+        ctx.textAlign =
+            "center";
 
 
         ctx.fillText(
@@ -1822,6 +2758,7 @@ function drawCatcher(){
             x-48,
             y-165
         );
+
 
         ctx.fillText(
             "♥",
@@ -1837,15 +2774,19 @@ function drawCatcher(){
 }
 
 
+
 /* =====================================================
    APA
 ===================================================== */
 
 function drawMonkey(){
 
-    const x = monkey.x;
+    const x =
+        monkey.x;
 
-    const y = monkey.y;
+
+    const y =
+        monkey.y;
 
 
     ctx.save();
@@ -1853,16 +2794,29 @@ function drawMonkey(){
 
     if(!monkey.attached){
 
-        ctx.translate(x,y);
+        ctx.translate(
+            x,
+            y
+        );
 
-        ctx.rotate(monkey.rotation);
 
-        drawCuteMonkey(0,0);
+        ctx.rotate(
+            monkey.rotation
+        );
+
+
+        drawCuteMonkey(
+            0,
+            0
+        );
 
     }
     else{
 
-        drawCuteMonkey(x,y);
+        drawCuteMonkey(
+            x,
+            y
+        );
 
     }
 
@@ -1872,29 +2826,41 @@ function drawMonkey(){
 }
 
 
+
 /* =====================================================
    SÖT APA
 ===================================================== */
 
-function drawCuteMonkey(x,y){
+function drawCuteMonkey(
+    x,
+    y
+){
 
     const c = {
 
         body:"#a96b38",
+
         face:"#e4aa75",
+
         belly:"#eac08e"
 
     };
 
 
-    ctx.strokeStyle = c.body;
+    ctx.strokeStyle =
+        c.body;
 
-    ctx.lineWidth = 8;
 
-    ctx.lineCap = "round";
+    ctx.lineWidth =
+        8;
+
+
+    ctx.lineCap =
+        "round";
 
 
     ctx.beginPath();
+
 
     ctx.arc(
         x+20,
@@ -1904,13 +2870,16 @@ function drawCuteMonkey(x,y){
         1.6
     );
 
+
     ctx.stroke();
 
 
-    ctx.fillStyle = c.body;
+    ctx.fillStyle =
+        c.body;
 
 
     ctx.beginPath();
+
 
     ctx.ellipse(
         x,
@@ -1922,13 +2891,16 @@ function drawCuteMonkey(x,y){
         Math.PI*2
     );
 
+
     ctx.fill();
 
 
-    ctx.fillStyle = c.belly;
+    ctx.fillStyle =
+        c.belly;
 
 
     ctx.beginPath();
+
 
     ctx.ellipse(
         x,
@@ -1940,13 +2912,16 @@ function drawCuteMonkey(x,y){
         Math.PI*2
     );
 
+
     ctx.fill();
 
 
-    ctx.fillStyle = c.body;
+    ctx.fillStyle =
+        c.body;
 
 
     ctx.beginPath();
+
 
     ctx.arc(
         x,
@@ -1956,10 +2931,12 @@ function drawCuteMonkey(x,y){
         Math.PI*2
     );
 
+
     ctx.fill();
 
 
     ctx.beginPath();
+
 
     ctx.arc(
         x-22,
@@ -1969,6 +2946,7 @@ function drawCuteMonkey(x,y){
         Math.PI*2
     );
 
+
     ctx.arc(
         x+22,
         y-22,
@@ -1977,13 +2955,16 @@ function drawCuteMonkey(x,y){
         Math.PI*2
     );
 
+
     ctx.fill();
 
 
-    ctx.fillStyle = "#efa58d";
+    ctx.fillStyle =
+        "#efa58d";
 
 
     ctx.beginPath();
+
 
     ctx.arc(
         x-22,
@@ -1993,6 +2974,7 @@ function drawCuteMonkey(x,y){
         Math.PI*2
     );
 
+
     ctx.arc(
         x+22,
         y-22,
@@ -2001,13 +2983,16 @@ function drawCuteMonkey(x,y){
         Math.PI*2
     );
 
+
     ctx.fill();
 
 
-    ctx.fillStyle = c.face;
+    ctx.fillStyle =
+        c.face;
 
 
     ctx.beginPath();
+
 
     ctx.ellipse(
         x,
@@ -2019,13 +3004,16 @@ function drawCuteMonkey(x,y){
         Math.PI*2
     );
 
+
     ctx.fill();
 
 
-    ctx.fillStyle = "white";
+    ctx.fillStyle =
+        "white";
 
 
     ctx.beginPath();
+
 
     ctx.arc(
         x-8,
@@ -2035,6 +3023,7 @@ function drawCuteMonkey(x,y){
         Math.PI*2
     );
 
+
     ctx.arc(
         x+8,
         y-23,
@@ -2043,13 +3032,16 @@ function drawCuteMonkey(x,y){
         Math.PI*2
     );
 
+
     ctx.fill();
 
 
-    ctx.fillStyle = "#332017";
+    ctx.fillStyle =
+        "#332017";
 
 
     ctx.beginPath();
+
 
     ctx.arc(
         x-8,
@@ -2059,6 +3051,7 @@ function drawCuteMonkey(x,y){
         Math.PI*2
     );
 
+
     ctx.arc(
         x+8,
         y-23,
@@ -2067,13 +3060,16 @@ function drawCuteMonkey(x,y){
         Math.PI*2
     );
 
+
     ctx.fill();
 
 
-    ctx.fillStyle = "white";
+    ctx.fillStyle =
+        "white";
 
 
     ctx.beginPath();
+
 
     ctx.arc(
         x-9,
@@ -2083,6 +3079,7 @@ function drawCuteMonkey(x,y){
         Math.PI*2
     );
 
+
     ctx.arc(
         x+7,
         y-24,
@@ -2091,13 +3088,16 @@ function drawCuteMonkey(x,y){
         Math.PI*2
     );
 
+
     ctx.fill();
 
 
-    ctx.fillStyle = "#653421";
+    ctx.fillStyle =
+        "#653421";
 
 
     ctx.beginPath();
+
 
     ctx.ellipse(
         x,
@@ -2109,15 +3109,20 @@ function drawCuteMonkey(x,y){
         Math.PI*2
     );
 
+
     ctx.fill();
 
 
-    ctx.strokeStyle = "#653421";
+    ctx.strokeStyle =
+        "#653421";
 
-    ctx.lineWidth = 2;
+
+    ctx.lineWidth =
+        2;
 
 
     ctx.beginPath();
+
 
     ctx.arc(
         x,
@@ -2127,20 +3132,26 @@ function drawCuteMonkey(x,y){
         Math.PI
     );
 
+
     ctx.stroke();
 
 
-    ctx.strokeStyle = c.body;
+    ctx.strokeStyle =
+        c.body;
 
-    ctx.lineWidth = 8;
+
+    ctx.lineWidth =
+        8;
 
 
     ctx.beginPath();
+
 
     ctx.moveTo(
         x-12,
         y
     );
+
 
     ctx.lineTo(
         x-31,
@@ -2153,18 +3164,22 @@ function drawCuteMonkey(x,y){
         y
     );
 
+
     ctx.lineTo(
         x+31,
         y+18
     );
 
+
     ctx.stroke();
 
 
-    ctx.fillStyle = c.face;
+    ctx.fillStyle =
+        c.face;
 
 
     ctx.beginPath();
+
 
     ctx.arc(
         x-32,
@@ -2174,6 +3189,7 @@ function drawCuteMonkey(x,y){
         Math.PI*2
     );
 
+
     ctx.arc(
         x+32,
         y+19,
@@ -2182,20 +3198,26 @@ function drawCuteMonkey(x,y){
         Math.PI*2
     );
 
+
     ctx.fill();
 
 
-    ctx.strokeStyle = c.body;
+    ctx.strokeStyle =
+        c.body;
 
-    ctx.lineWidth = 8;
+
+    ctx.lineWidth =
+        8;
 
 
     ctx.beginPath();
+
 
     ctx.moveTo(
         x-9,
         y+29
     );
+
 
     ctx.lineTo(
         x-19,
@@ -2208,14 +3230,17 @@ function drawCuteMonkey(x,y){
         y+29
     );
 
+
     ctx.lineTo(
         x+19,
         y+46
     );
 
+
     ctx.stroke();
 
 }
+
 
 
 /* =====================================================
@@ -2249,6 +3274,7 @@ function draw(){
 }
 
 
+
 /* =====================================================
    SPELLOOP
 ===================================================== */
@@ -2261,14 +3287,23 @@ function gameLoop(){
 
     draw();
 
-    requestAnimationFrame(gameLoop);
+    requestAnimationFrame(
+        gameLoop
+    );
 
 }
 
 
+
+gameReady =
+    true;
+
+
 setupLevel();
 
+
 gameLoop();
+
 
 </script>
 
